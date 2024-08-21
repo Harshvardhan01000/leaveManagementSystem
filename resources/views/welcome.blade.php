@@ -39,23 +39,16 @@
         }
 
         .chart-container {
-            border: 2px solid #ddd;
-            /* Light grey border */
-            border-radius: 10px;
-            /* Rounded corners */
+            border: 1px solid #ddd;
+            border-radius: .375rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            /* Soft shadow */
             background-color: #fff;
-            /* White background */
-            padding: 20px;
-            /* Space inside the container */
+            padding: 1rem;
         }
 
         .chart-container canvas {
             max-width: 100%;
-            /* Ensure charts fit within their container */
             height: auto;
-            /* Maintain aspect ratio */
         }
 
         h5 {
