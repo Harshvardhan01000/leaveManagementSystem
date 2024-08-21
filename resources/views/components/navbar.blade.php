@@ -18,10 +18,10 @@
                     <a class="nav-link active" href="#">Dashbord</a>
                 </li>
                 <li class="nav-item mt-2">
-                    <a class="nav-link" href="#">Employee List</a>
+                    <a class="nav-link" href="employeeListing">Employee List</a>
                 </li>
                 <li class="nav-item mt-2">
-                    <a class="nav-link" href="#">Leave Approval</a>
+                    <a class="nav-link" href="leaveApproval">Leave Approval</a>
                 </li>
 
                 <!-- User Profile Dropdown -->
@@ -44,7 +44,7 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="#">Sign Out</a>
+                            <a class="dropdown-item" href="login">Sign Out</a>
                         </li>
                     </ul>
                 </li>

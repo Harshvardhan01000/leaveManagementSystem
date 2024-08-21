@@ -17,6 +17,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', function () {
+Route::get('/login', function () {
     return view('authentication.login');
+});
+
+Route::get('/employeeListing', function () {
+    return view('components.employeeListing');
+});
+
+Route::get('/leaveApproval', function () {
+    return view('components.leaveApproval');
 });
