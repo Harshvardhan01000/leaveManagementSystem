@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\authController;
+use App\Http\Controllers\dashbordController;
+use App\Http\Controllers\departmentController;
+use App\Http\Controllers\employeeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,12 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [authController::class,'index'])->name('login');
 
-Route::get('/login', function () {
-    return view('authentication.login');
+Route::post('/authentication',[authController::class,'login']);
+
+Route::get('/logout',[authController::class,'logout']);
+
+Route::middleware('auth')->group(function () {
+    Route::get('home',[dashbordController::class,'showDashBord']);
+    Route::resource('employee', employeeController::class); 
+    Route::get('fetch-department',[departmentController::class,'fetchDepartment']);
 });
 
 Route::get('/employeeListing', function () {
