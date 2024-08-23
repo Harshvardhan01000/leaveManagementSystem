@@ -1,4 +1,10 @@
-    <div class="row">
+@extends('welcome')
+@section('content')
+<div class="container text-center mt-4">
+    <div class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#holidayModal">create
+        holiday</div>
+    </div>
+    <div class="row my-3">
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
@@ -27,10 +33,7 @@
             </div>
         </div>
     </div>
-    <div class="container text-center mt-4">
-        <div class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#holidayModal">create
-            holiday</div>
-    </div>
+    
 
     {{-- holiday modal --}}
     <div class="modal fade" id="holidayModal" tabindex="-1" aria-labelledby="holidayModalLabel" aria-hidden="true">
@@ -60,5 +63,5 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="charts/presentEmployeeChart.js"></script>
+    <script src="assets/js/adminDashbord.js"></script>
+@endsection

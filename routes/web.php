@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\attendanceController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\dashbordController;
 use App\Http\Controllers\departmentController;
@@ -27,6 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::get('home',[dashbordController::class,'showDashBord']);
     Route::resource('employee', employeeController::class); 
     Route::get('fetch-department',[departmentController::class,'fetchDepartment']);
+    Route::get('/employeeView',function(){
+        return view('userPages.viewPage');
+    });
+    Route::get('/get-individual-attendance/{id}',[attendanceController::class,'getIndividualAttendance']);
 });
 
 Route::get('/employeeListing', function () {

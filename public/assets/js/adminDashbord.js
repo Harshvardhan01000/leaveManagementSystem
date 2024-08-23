@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 label: 'employee',
                 data: [300, 100],
                 backgroundColor: [
-                    'rgb(255, 99, 132)',
                     'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
                 ],
                 hoverOffset: 4
             }]
@@ -35,11 +35,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 label: 'employee',
                 data: [300, 50],
                 backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
+                    'rgb(129, 212, 250)',
+                    'rgb(225, 245, 254)',
                 ],
                 hoverOffset: 4
             }]
         }
     });
+});
+$(document).ready(function(){
+    $('#dashboard a.nav-link').removeClass('collapsed');
+    $('#sidebar-nav li.nav-item:not(#dashboard) a.nav-link').addClass('collapsed');
+
 });

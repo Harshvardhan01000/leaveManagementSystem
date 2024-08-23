@@ -1,28 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="assets/css/style.css" rel="stylesheet">
-
-</head>
-
-<body>
-    @include('components.navbar')
-    <div class="row">
-        <div class="col-2">
-            @include('components.sidebar')
-        </div>
-        <div class="col-10 mt-5">
+@extends('welcome')
+@section('content')
             <div class="mt-4">
                 <div class="container-fluid">
-                    <h2 class="mb-4">Employee List</h2>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Employee List</h2>
+                        <i class="bi bi-person-add fs-1 me-2" id="register"></i>
+                    </div>
                     <div class="table-responsive px-2">
                         <table class="table table-striped table-hover align-middle rounded-2 text-center">
                             <thead class="thead-light">
@@ -45,13 +28,11 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
     <!-- Edit Modal -->
     <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl"> 
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editEmployeeModalLabel">Edit Employee</h5>
@@ -61,11 +42,10 @@
                     <form id="editEmployeeForm" action="javascript:;" method="POST" enctype='multipart/form-data'>
                         <input type="hidden" id="id" value="">
                         <input type="hidden" id="_method" name="_method" value="post">
-                        <div class="row">
+                        <div class="row" id="inputs">
                             <div class="mb-3 col-6">
                                 <label for="editFirstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name"
-                                    required>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
                             </div>
                             <div class="mb-3 col-6">
                                 <label for="editLastName" class="form-label">Last Name</label>
@@ -82,13 +62,18 @@
                             </div>
 
                             <div class="mb-3 col-6">
-                                <label for="editDesignation" class="form-label">Designation</label>
+                                <label for="editDepartment" class="form-label">Department</label>
                                 <select name="department" id="department" class="form-select"></select>
                             </div>
                             <div class="mb-3 col-6">
+                                <label for="editDesignation" class="form-label">Designation</label>
+                                <input type="text" class="form-control" id="designation" name="designation"
+                                    required>
+                            </div>
+                            <div class="mb-3 col-6">
                                 <label for="editJoiningDate" class="form-label">Joining Date</label>
-                                <input type="datetime-local" class="form-control" id="joining_date"
-                                    name="joining_date" required>
+                                <input type="datetime-local" class="form-control" id="joining_date" name="joining_date"
+                                    required>
                             </div>
                             <div class="mb-3 col-6">
                                 <label for="editCurrentSalary" class="form-label">Current Salary</label>
@@ -97,9 +82,12 @@
                             </div>
                             <div class="mb-3 col-6">
                                 <label for="editProfilePhoto" class="form-label">Profile Photo</label>
-                                <input type="file" class="form-control" id="image" name="image"
-                                    >
+                                <input type="file" class="form-control" id="image" name="image">
                             </div>
+                        </div>
+                        <div class="mb-3 col-6" id="inputPassword">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -108,14 +96,5 @@
             </div>
         </div>
     </div>
-
-
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-        crossorigin="anonymous"></script>
     <script src="assets/js/employee.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
-</body>
-
-</html>
+@endsection

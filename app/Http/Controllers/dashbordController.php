@@ -9,6 +9,6 @@ class dashbordController extends Controller
     public function showDashBord(){
         
 
-        return view('welcome');
+        return view('components.adminDashbord');
     }
 }

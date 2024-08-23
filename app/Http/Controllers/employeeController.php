@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\User;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class employeeController extends Controller
 {
@@ -33,15 +34,39 @@ class employeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $user = User::create([
+                'first_name'=>$request->first_name,
+                'last_name'=>$request->last_name,
+                'email'=>$request->email,
+                'phone_number'=>$request->phone_number,
+                'password'=>Hash::make($request->password)
+        ]);
+        if ($request->has('image')) {
+            $file = $request->file('image');
+            $extention = $file->getClientOriginalExtension();
+            $user_logo_name = time() . "." . $extention;
+            $file->move('userImages/', $user_logo_name);
+            $user->image = $user_logo_name;
+            $user->save();
+        }
+        Employee::create([
+            'user_id'=>$user->id,
+            'department_id' => $request->department,
+            'designation' => $request->designation,
+            'joining_date' => $request->joining_date,
+            'current_salary' => $request->current_salary,
+        ]);
+        return response()->json([
+            "Message"=>"employee created successfully"
+        ]);
+    }   
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
@@ -58,18 +83,37 @@ class employeeController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $Employee = Employee::find($id);
+        $user = User::find($Employee->user_id);
+        if ($request->has('image')) {
+            $name = $user->image;
+            if ($name != 'userlogo.png') {
+                unlink("userImages/$name");
+            }
 
-        $Employee = Employee::find($id)->update([
-            'department_id' => $request->department_id,
+            $file = $request->file('image');
+            $extention = $file->getClientOriginalExtension();
+            $user_logo_name = time() . "." . $extention;
+            $file->move('userImages/', $user_logo_name);
+            $user->image = $user_logo_name;
+            $user->save();
+        }
+
+
+        $Employee->update([
+            'department_id' => $request->department,
             'designation' => $request->designation,
             'joining_date' => $request->joining_date,
             'current_salary' => $request->current_salary,
         ]);
-        User::find($Employee->user_id)->update([
-            'first_name'=> $request->first_name,
-            'last_name'=> $request->last_name,
-            'email'=> $request->email,
-            'phone_number'=> $request->phone_number,
+        $user->update([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+        ]);
+        return response()->json([
+            'message'=>'successfully updated'
         ]);
     }
 

@@ -1,10 +1,10 @@
-function getEmployeeData(){
+function getEmployeeData() {
     $.ajax({
         type: 'GET',
         url: '/employee',
         success: function (data) {
-            console.log(data);
-            
+
+            $('tbody').empty();
             data.forEach(element => {
                 const formattedSalary = element.current_salary.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 const joiningDate = new Date(element.joining_date);
@@ -15,12 +15,12 @@ function getEmployeeData(){
                        <td>${element.user_details.email}</td>
                        <td>${element.user_details.phone_number}</td>
                        <td>${element.designation}</td>
-                       <td>${element.department_details .department_name}</td>
+                       <td>${element.department_details.department_name}</td>
                        <td>${formattedDate}</td>
                        <td>$${formattedSalary}</td>
-                       <td><button class="btn btn-primary btn-sm edit-btn" id='edit' data-id="${element.id}">Edit</button></td>
-                       <td> <button class="btn btn-info btn-sm view-btn" id='view' data-id="${element.id}">View</button></td>
-                       <td> <button class="btn btn-danger btn-sm delete-btn" id='delete' data-id="${element.id}">Delete</button></td>
+                       <td><i class="bi bi-pencil-square" id='edit' data-id="${element.id}"></i></td>
+                       <td><i class="bi bi-eye" id='view' data-id="${element.id}"></i></td>
+                       <td><i class="bi bi-trash3" id='delete' data-id="${element.id}"></i></td>
                    </tr>`
                 );
             });
@@ -28,25 +28,27 @@ function getEmployeeData(){
         }
     })
 }
-function getDepartment(employeeData){
+function getDepartment(employeeData = null) {
     $.ajax({
-        type:'GET',
-        url:'fetch-department',
-        success:function(data){
-            if(data){
+        type: 'GET',
+        url: 'fetch-department',
+        success: function (data) {
+            if (data) {
                 $('#department').empty();
                 $('#department').append(`<option val="" style="display:none">select</option>`);
-                data.forEach(element =>{
-                    if(employeeData.department_details.id == element.id){
+                data.forEach(element => {
+                    if (employeeData && employeeData.department_details.id == element.id) {
                         $('#department').append(
-                            `<option val=${element.id} selected>${element.department_name}</option>`
-                        );    
-                    }else{
+                            `<option value=${element.id} selected>${element.department_name}</option>`
+                        );
+
+                        console.log($('#department').val());
+                    } else {
                         $('#department').append(
-                            `<option val=${element.id}>${element.department_name}</option>`
+                            `<option value=${element.id}>${element.department_name}</option>`
                         );
                     }
-                    
+
                 });
             }
         }
@@ -54,6 +56,8 @@ function getDepartment(employeeData){
 }
 
 $(document).ready(function () {
+    $('#employeelist a.nav-link').removeClass('collapsed');
+    $('#sidebar-nav li.nav-item:not(#employeelist) a.nav-link').addClass('collapsed');
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -61,17 +65,17 @@ $(document).ready(function () {
     });
 
     getEmployeeData();
-    $(document).on('click','#edit',function(){
+    $(document).on('click', '#edit', function () {
         $.ajax({
-            type:"GET",
-            url:`/employee/${$(this).attr('data-id')}/edit`,
-            success:function(data){
+            type: "GET",
+            url: `/employee/${$(this).attr('data-id')}/edit`,
+            success: function (data) {
                 $('#editEmployeeForm').trigger('reset');
                 const joinDate = new Date(data.joining_date);
-                
+
                 const formattedJoinDate = `${joinDate.getFullYear()}-${String(joinDate.getMonth()
-                     + 1).padStart(2, '0')}-${String(joinDate.getDate()).padStart(2, '0')}T${String(joinDate.getHours()).padStart(2, '0')}:${String(joinDate.getMinutes()).padStart(2, '0')}`;
-                
+                    + 1).padStart(2, '0')}-${String(joinDate.getDate()).padStart(2, '0')}T${String(joinDate.getHours()).padStart(2, '0')}:${String(joinDate.getMinutes()).padStart(2, '0')}`;
+
 
                 $('#id').val(data.id);
                 $('#_method').val('put');
@@ -81,27 +85,30 @@ $(document).ready(function () {
                 $('#phone_number').val(data.user_details.phone_number);
                 $('#joining_date').val(formattedJoinDate);
                 $('#current_salary').val(data.current_salary);
+                $('#designation').val(data.designation);
                 getDepartment(data);
             }
         });
+        $('#inputPassword').hide();
+        $('#editEmployeeForm').trigger('reset');
         $('#editEmployeeModal').modal('show');
     });
-    $(document).on('click','#view',function(){
-        
+    $(document).on('click', '#view', function () {
+
     });
-    $(document).on('click','#delete',function(){
+    $(document).on('click', '#delete', function () {
         $.ajax({
-            type:'delete',
-            url:`/employee/${$(this).attr('data-id')}`,
-            success:function($data){
+            type: 'delete',
+            url: `/employee/${$(this).attr('data-id')}`,
+            success: function ($data) {
                 $('tbody').empty();
                 getEmployeeData();
             }
         });
     });
-    $('#editEmployeeForm').on('submit',function(e){
+    $('#editEmployeeForm').on('submit', function (e) {
         formData = new FormData(this);
-        urlLink = ($('#_method').val() == "put") ? `/employee/${$('#id').val()}` : $(this).attr('data-act');
+        urlLink = ($('#_method').val() == "put") ? `/employee/${$('#id').val()}` : '/employee';
         e.preventDefault();
         $.ajax({
             type: 'post',
@@ -116,11 +123,15 @@ $(document).ready(function () {
                     getEmployeeData()
                 }
                 $('#editEmployeeForm').trigger('reset');
-                $('#exampleModal').modal('hide');
-                Swal.fire({
-                    title: "Successfull!",
-                });
+                $('#editEmployeeModal').modal('hide');
             }
         });
+    });
+    $('#register').on('click', function () {
+        $('#editEmployeeForm').trigger('reset');
+        $('#editEmployeeModal').modal('show');
+        $('#inputPassword').show();
+        $('#_method').val('post')
+        getDepartment();
     });
 });
