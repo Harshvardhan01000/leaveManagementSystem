@@ -1,137 +1,218 @@
-function getEmployeeData() {
-    $.ajax({
-        type: 'GET',
-        url: '/employee',
-        success: function (data) {
+$(document).ready(function() {
+    $('.sidebar-item').removeClass('active');
+    $('#employee').addClass('active');  
 
-            $('tbody').empty();
-            data.forEach(element => {
-                const formattedSalary = element.current_salary.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                const joiningDate = new Date(element.joining_date);
-                const formattedDate = joiningDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-                $('tbody').append(
-                    `<tr>
-                       <td>${element.user_details.first_name} ${element.user_details.last_name}</td>
-                       <td>${element.user_details.email}</td>
-                       <td>${element.user_details.phone_number}</td>
-                       <td>${element.designation}</td>
-                       <td>${element.department_details.department_name}</td>
-                       <td>${formattedDate}</td>
-                       <td>$${formattedSalary}</td>
-                       <td><i class="bi bi-pencil-square" id='edit' data-id="${element.id}"></i></td>
-                       <td><i class="bi bi-eye" id='view' data-id="${element.id}"></i></td>
-                       <td><i class="bi bi-trash3" id='delete' data-id="${element.id}"></i></td>
-                   </tr>`
-                );
-            });
-
+    // Initialize validation
+    $('#editEmployeeForm').validate({
+        rules: {
+            first_name: {
+                required: true,
+            },
+            last_name: {
+                required: true,
+            },
+            email: {
+                required: true,
+                email: true,
+            },
+            phone_number: {
+                required: true,
+                digits: true
+            },
+            department: {
+                required: true,
+            },
+            designation: {
+                required: true,
+            },
+            joining_date: {
+                required: true,
+            },
+            current_salary: {
+                required: true,
+                number: true,
+                min: 0
+            },
+            password: {
+                minlength: 6
+            }
+        },
+        messages: {
+            first_name: "First name is required.",
+            last_name: "Last name is required.",
+            email: {
+                required: "A valid email address is required.",
+                email: "Please enter a valid email address."
+            },
+            phone_number: "Phone number is required.",
+            department: "Department is required.",
+            designation: "Designation is required.",
+            joining_date: "Joining date is required.",
+            current_salary: {
+                required: "Current salary is required.",
+                number: "Please enter a valid number.",
+                min: "Salary must be a positive number."
+            },
+            password: {
+                minlength: "Password should be at least 6 characters long."
+            }
+        },
+        errorPlacement: function(error, element) {
+            error.insertAfter(element);  // Place error after the input field
         }
-    })
-}
-function getDepartment(employeeData = null) {
-    $.ajax({
-        type: 'GET',
-        url: 'fetch-department',
-        success: function (data) {
-            if (data) {
-                $('#department').empty();
-                $('#department').append(`<option val="" style="display:none">select</option>`);
-                data.forEach(element => {
-                    if (employeeData && employeeData.department_details.id == element.id) {
-                        $('#department').append(
-                            `<option value=${element.id} selected>${element.department_name}</option>`
-                        );
+    });
 
-                        console.log($('#department').val());
-                    } else {
-                        $('#department').append(
-                            `<option value=${element.id}>${element.department_name}</option>`
+    // Reset validation and form data on modal hide
+    $('#editEmployeeModal').on('hidden.bs.modal', function () {
+        let form = $('#editEmployeeForm');
+        form.validate().resetForm(); // Reset validation messages
+        form[0].reset(); // Reset form data
+        form.find('.form-control').removeClass('is-invalid'); 
+        $("input,select").removeClass('error');// Remove validation classes
+    });
+
+    // Event listener to setup the modal when it's shown
+    $('#editEmployeeModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var mode = button.data('mode'); // Extract info from data-* attributes
+
+        setupModal(mode);
+
+        if (mode === 'add') {
+            $('#editEmployeeForm').trigger('reset');
+            $('#editEmployeeForm').find('.form-control').removeClass('is-invalid'); // Ensure classes are removed
+            $('#_method').val('post');
+        }
+    });
+
+    // Setup modal function
+    function setupModal(mode) {
+        var modalTitle = $('#editEmployeeModalLabel');
+        var saveButton = $('#editEmployeeForm button[type="submit"]');
+        var passwordField = $('#inputPassword');
+
+        if (mode === 'edit') {
+            modalTitle.text('Edit Employee');
+            saveButton.text('Save Changes');
+            passwordField.hide(); // Hide password field in edit mode
+        } else if (mode === 'add') {
+            modalTitle.text('Add New Employee');
+            saveButton.text('Add Employee');
+            passwordField.show(); // Show password field in add mode
+        }
+    }
+
+    // Handle form submission
+    $('#editEmployeeForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+
+        if ($(this).valid()) {
+            let method = $('#_method').val();
+            let url = (method == 'post') ? '/employee' : `/employee/${$('#id').val()}`;
+
+            $.ajax({
+                url: url,
+                method: method,
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'The form has been submitted successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        $('#editEmployeeModal').modal('hide'); // Hide modal after success
+                        location.reload(); // Reload the page
+                    });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'There was an error submitting the form. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
+    });
+
+    // Trigger the modal for "add" mode
+    $('#addEmployeeButton').on('click', function() {
+        $('#editEmployeeForm').trigger('reset');
+        $('#editEmployeeForm').find('.form-control').removeClass('is-invalid');
+        setupModal('add');
+        $('#editEmployeeModal').modal('show');
+    });
+
+    // Trigger the modal for "edit" mode
+    $(document).on('click', '.edit-icon', function() {
+        $('#editEmployeeForm').trigger('reset');
+        $('#editEmployeeForm').find('.form-control').removeClass('is-invalid');
+
+        let employeeId = $(this).data('id');
+
+        // Load employee data into the form
+        $.ajax({
+            url: '/employee/' + employeeId + '/edit',
+            method: 'GET',
+            success: function(data) {
+                $('#_method').val('put');
+                $('#id').val(data.id);
+
+                $('#editEmployeeForm').find('input[name="first_name"]').val(data.user_details.first_name);
+                $('#editEmployeeForm').find('input[name="last_name"]').val(data.user_details.last_name);
+                $('#editEmployeeForm').find('input[name="email"]').val(data.user_details.email);
+                $('#editEmployeeForm').find('input[name="phone_number"]').val(data.user_details.phone_number);
+                $('#editEmployeeForm').find('select[name="department"]').val(data.department_id);
+                $('#editEmployeeForm').find('input[name="designation"]').val(data.designation);
+                $('#editEmployeeForm').find('input[name="joining_date"]').val(data.joining_date);
+                $('#editEmployeeForm').find('input[name="current_salary"]').val(data.current_salary);
+                $('#editEmployeeForm').find('input[name="image"]').val(''); // Reset file input
+                $('#editEmployeeForm').find('input[name="password"]').val(''); // Reset password input
+                $('#editEmployeeForm').attr('action', '/employee/' + employeeId); // Set form action URL
+                getDepartment(data);
+                $('#editEmployeeModal').modal('show');
+                setupModal('edit');
+            }
+        });
+    });
+
+    $(document).on('click', '#delete', function() {
+        var employeeId = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/employee/' + employeeId,
+                    method: 'DELETE',
+                    success: function(response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'The employee record has been deleted.',
+                            'success'
+                        ).then(() => {
+                            location.reload(); // Reload the page or remove the row from the table
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire(
+                            'Error!',
+                            'There was an error deleting the record. Please try again.',
+                            'error'
                         );
                     }
-
                 });
             }
-        }
-    });
-}
-
-$(document).ready(function () {
-    $('#employeelist a.nav-link').removeClass('collapsed');
-    $('#sidebar-nav li.nav-item:not(#employeelist) a.nav-link').addClass('collapsed');
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    getEmployeeData();
-    $(document).on('click', '#edit', function () {
-        $.ajax({
-            type: "GET",
-            url: `/employee/${$(this).attr('data-id')}/edit`,
-            success: function (data) {
-                $('#editEmployeeForm').trigger('reset');
-                const joinDate = new Date(data.joining_date);
-
-                const formattedJoinDate = `${joinDate.getFullYear()}-${String(joinDate.getMonth()
-                    + 1).padStart(2, '0')}-${String(joinDate.getDate()).padStart(2, '0')}T${String(joinDate.getHours()).padStart(2, '0')}:${String(joinDate.getMinutes()).padStart(2, '0')}`;
-
-
-                $('#id').val(data.id);
-                $('#_method').val('put');
-                $('#first_name').val(data.user_details.first_name);
-                $('#last_name').val(data.user_details.last_name);
-                $('#email').val(data.user_details.email);
-                $('#phone_number').val(data.user_details.phone_number);
-                $('#joining_date').val(formattedJoinDate);
-                $('#current_salary').val(data.current_salary);
-                $('#designation').val(data.designation);
-                getDepartment(data);
-            }
         });
-        $('#inputPassword').hide();
-        $('#editEmployeeForm').trigger('reset');
-        $('#editEmployeeModal').modal('show');
-    });
-    $(document).on('click', '#view', function () {
-
-    });
-    $(document).on('click', '#delete', function () {
-        $.ajax({
-            type: 'delete',
-            url: `/employee/${$(this).attr('data-id')}`,
-            success: function ($data) {
-                $('tbody').empty();
-                getEmployeeData();
-            }
-        });
-    });
-    $('#editEmployeeForm').on('submit', function (e) {
-        formData = new FormData(this);
-        urlLink = ($('#_method').val() == "put") ? `/employee/${$('#id').val()}` : '/employee';
-        e.preventDefault();
-        $.ajax({
-            type: 'post',
-            url: urlLink,
-            data: formData,
-            dataType: 'JSON',
-            contentType: false,
-            cache: false,
-            processData: false,
-            success: function (data) {
-                if (data) {
-                    getEmployeeData()
-                }
-                $('#editEmployeeForm').trigger('reset');
-                $('#editEmployeeModal').modal('hide');
-            }
-        });
-    });
-    $('#register').on('click', function () {
-        $('#editEmployeeForm').trigger('reset');
-        $('#editEmployeeModal').modal('show');
-        $('#inputPassword').show();
-        $('#_method').val('post')
-        getDepartment();
     });
 });

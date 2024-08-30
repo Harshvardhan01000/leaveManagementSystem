@@ -17,40 +17,40 @@ class userSeeder extends Seeder
             [
             'first_name'=>'harsh',
             'last_name'=>'zala',
-            'email'=>'harsh@gmail.com',
+            'email'=>'harsh@webcodegenie.com',
             'phone_number'=>1234567890,
-            'password'=>Hash::make('111111')    
+            'password'=>Hash::make('harsh@2024')    
             ],
             [
                 'first_name'=>'mit',
                 'last_name'=>'zala',
-                'email'=>'mit@gmail.com',
+                'email'=>'mit@webcodegenie.com',
                 'phone_number'=>1234567890,
-                'password'=>Hash::make('111111')    
+                'password'=>Hash::make('mit@2024')    
             ],
             [
-                'first_name'=>'krishna',
-                'last_name'=>'patel',
-                'email'=>'krishna@gmail.com',
+                'first_name'=>'Krishna',
+                'last_name'=>'Patel',
+                'email'=>'krishna@webcodegenie.com',
                 'phone_number'=>1234567890,
-                'password'=>Hash::make('111111')    
+                'password'=>Hash::make('Krishna@2024')    
             ],
             [
-                'first_name'=>'sunil',
-                'last_name'=>'sorani',
-                'email'=>'sunil@gmail.com',
+                'first_name'=>'Sunil',
+                'last_name'=>'Sorani',
+                'email'=>'sunil@webcodegenie.com',
                 'phone_number'=>1234567890,
-                'password'=>Hash::make('111111')    
+                'password'=>Hash::make('Sunil@2024')    
                 ]
         ];
 
         // User::create([
-        //     'first_name'=>'admin',
-        //     'last_name'=>'admin',
-        //     'email'=>'admin@gmail.com',
-        //     'phone_number'=>1234567890,
+        //     'first_name'=>'Harshvardhan',
+        //     'last_name'=>'Zala',
+        //     'email'=>'harshvardhan.z@webcodegenie.com',
+        //     'phone_number'=>6252814567,
         //     'role'=>1,
-        //     'password'=>Hash::make('111111')
+        //     'password'=>Hash::make('harshvardhan@2024')
         // ]);
         foreach($nonAdminUsers as $user){
             User::create($user);

@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\User;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class employeeController extends Controller
@@ -14,11 +15,40 @@ class employeeController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $data = Employee::with(['userDetails', 'departmentDetails'])->get();
-        return response()->json($data);
+{
+    $user = Auth::user();
+
+    // Get filter and search inputs
+    $filter = $request->input('filter', 'name'); // Default filter is 'name'
+    $search = $request->input('search', '');
+
+    // Build the query with filtering and searching
+    $query = Employee::with(['userDetails', 'departmentDetails']);
+
+    if ($search) {
+        switch ($filter) {
+            case 'department':
+                $query->whereHas('departmentDetails', function ($q) use ($search) {
+                    $q->where('department_name', 'like', '%' . $search . '%');
+                });
+                break;
+            case 'designation':
+                $query->where('designation', 'like', '%' . $search . '%');
+                break;
+            case 'name':
+            default:
+                $query->whereHas('userDetails', function ($q) use ($search) {
+                    $q->where('first_name', 'like', '%' . $search . '%')
+                        ->orWhere('last_name', 'like', '%' . $search . '%');
+                });
+                break;
+        }
     }
 
+    $data = $query->orderBy('created_at')->paginate(10);
+
+    return view('admin.employee', compact('user', 'data'));
+}
 
 
     /**
@@ -83,6 +113,7 @@ class employeeController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        dd($request->all());
         $Employee = Employee::find($id);
         $user = User::find($Employee->user_id);
         if ($request->has('image')) {
