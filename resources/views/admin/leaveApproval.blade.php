@@ -23,69 +23,72 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
     <link href="assets/css/app.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         /* Custom Modal Styling */
-.modal-content {
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
 
-.modal-header {
-    background-color: #f8f9fa;
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-}
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+        }
 
-.modal-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-}
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
 
-.form-label {
-    font-size: 0.95rem;
-    color: #495057;
-}
+        .form-label {
+            font-size: 0.95rem;
+            color: #495057;
+        }
 
-.text-primary {
-    color: #007bff;
-}
+        .text-primary {
+            color: #007bff;
+        }
 
-.text-secondary {
-    color: #6c757d;
-}
+        .text-secondary {
+            color: #6c757d;
+        }
 
-.btn-success, .btn-danger {
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-}
+        .btn-success,
+        .btn-danger {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
 
-.btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
-}
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
 
-.btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
-}
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
 
-.btn-close {
-    background: none;
-    border: none;
-    opacity: 0.5;
-}
+        .btn-close {
+            background: none;
+            border: none;
+            opacity: 0.5;
+        }
 
-.btn-close:hover {
-    opacity: 1;
-}
+        .btn-close:hover {
+            opacity: 1;
+        }
 
-.modal-footer {
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-}
-
+        .modal-footer {
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+        }
     </style>
 </head>
 
@@ -116,55 +119,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Project Apollo</td>
-                            <td>Laravel</td>
-                            <td><span class="badge bg-success">Casual Leave</span></td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td class="d-none d-md-table-cell fs-4 text-secondary"><i class="bi bi-eye" id='view'
-                                    data-bs-toggle="modal" data-bs-target="#leaveModal"></i></td>
-                            <td><span class="text-info">pending</span></td>
-                        </tr>
-                        <tr>
-                            <td>Project Apollo</td>
-                            <td>Laravel</td>
-                            <td><span class="badge bg-success">Casual Leave</span></td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td class="d-none d-md-table-cell fs-4 text-secondary"><i class="bi bi-eye" id='view'
-                                    data-bs-toggle="modal" data-bs-target="#leaveModal"></i></td>
-
-                            <td><span class="text-info">pending</span></td>
-
-                        </tr>
-                        <tr>
-                            <td>Project Apollo</td>
-                            <td>Laravel</td>
-                            <td><span class="badge bg-success">Casual Leave</span></td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td class="d-none d-md-table-cell fs-4 text-secondary"><i class="bi bi-eye" id='view'
-                                    data-bs-toggle="modal" data-bs-target="#leaveModal"></i></td>
-
-                            <td><span class="text-info">pending</span></td>
-
-                        </tr>
-                        <tr>
-                            <td>Project Apollo</td>
-                            <td>Laravel</td>
-                            <td><span class="badge bg-success">Casual Leave</span></td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td class="d-none d-md-table-cell fs-4 text-secondary"><i class="bi bi-eye" id='view'
-                                    data-bs-toggle="modal" data-bs-target="#leaveModal"></i></td>
-
-                            <td><span class="text-info">pending</span></td>
-
-                        </tr>
-
+                        @foreach ($leaveList as $leave)
+                            <tr>
+                                <td>{{$leave->getEmployee->userDetails->first_name ?? 0}} {{$leave->getEmployee->userDetails->last_name ?? 0}}</td>
+                                <td>{{$leave->getEmployee->departmentDetails->department_name ?? 0}}</td>
+                                <td><span class="text">{{$leave->getLeaveType->leave_type_name ?? 0}}</span></td>
+                                <td class="d-none d-xl-table-cell">{{\Carbon\Carbon::parse($leave->start_date)->format('d F Y') ?? 0}}</td>
+                                <td class="d-none d-xl-table-cell">{{\Carbon\Carbon::parse($leave->end_date)->format('d F Y') ?? 0}}</td>
+                                <td class="d-none d-md-table-cell fs-4 text-secondary"><i class="bi bi-eye"
+                                        id='view' data-id={{$leave->id ?? 0}} data-bs-toggle="modal" data-bs-target="#leaveModal"></i></td>
+                                @if ($leave->leave_status == 'approved')
+                                <td><span class="badge bg-success">{{$leave->leave_status}}</span></td>
+                                @else
+                                <td><span class="badge bg-info">{{$leave->leave_status}}</span></td>
+                                @endif
+                            </tr>
+                        @endforeach
+                        
                     </tbody>
                 </table>
+                 <!-- Pagination Controls -->
+                 <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div>
+                        {{ $leaveList->links('vendor.pagination.custom-pagination') }}
+                    </div>
+                    <div>
+                        Showing {{ $leaveList->firstItem() }} to {{ $leaveList->lastItem() }} of {{ $leaveList->total() }}
+                        entries
+                    </div>
+                </div>
             </main>
 
             @include('component.footer')
@@ -173,56 +156,57 @@
 
 
     <!-- Leave Details Modal -->
-<div class="modal fade" id="leaveModal" tabindex="-1" aria-labelledby="leaveModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header bg-light border-0 rounded-top">
-                <h5 class="modal-title text-dark fw-bold" id="leaveModalLabel">
-                    <i class="bi bi-person-lines-fill me-2"></i> Leave Details
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <strong class="text-primary">Name:</strong> 
-                    <span id="name" class="text-secondary">John Doe</span>
+    <div class="modal fade" id="leaveModal" tabindex="-1" aria-labelledby="leaveModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-light border-0 rounded-top">
+                    <h5 class="modal-title text-dark fw-bold" id="leaveModalLabel">
+                        <i class="bi bi-person-lines-fill me-2"></i> Leave Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="mb-3">
-                    <strong class="text-primary">Department:</strong> 
-                    <span id="department" class="text-secondary">Laravel Development</span>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <strong class="text-primary">Name:</strong>
+                        <span id="name" class="text-secondary">John Doe</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-primary">Department:</strong>
+                        <span id="department" class="text-secondary">Laravel Development</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-primary">Leave Type:</strong>
+                        <span id="leave-type" class="text-secondary">Casual Leave</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-primary">Applied Date:</strong>
+                        <span id="applied-date" class="text-secondary">01/02/2025</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-primary">Start Date:</strong>
+                        <span id="start-date" class="text-secondary">02/02/2025</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-primary">End Date:</strong>
+                        <span id="end-date" class="text-secondary">10/02/2025</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-primary">Description:</strong>
+                        <p id="description" class="text-secondary">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis cupiditate, minima a
+                            asperiores at magnam autem aliquam sit reprehenderit accusamus.
+                        </p>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <strong class="text-primary">Leave Type:</strong> 
-                    <span id="leave-type" class="text-secondary">Casual Leave</span>
+                <div class="modal-footer border-0 bg-light rounded-bottom">
+                    <button type="button" class="btn btn-success w-100 mb-2" id="approve">Approve</button>
+                    <button type="button" class="btn btn-danger w-100" id="reject">Reject</button>
                 </div>
-                <div class="mb-3">
-                    <strong class="text-primary">Applied Date:</strong> 
-                    <span id="applied-date" class="text-secondary">01/02/2025</span>
-                </div>
-                <div class="mb-3">
-                    <strong class="text-primary">Start Date:</strong> 
-                    <span id="start-date" class="text-secondary">02/02/2025</span>
-                </div>
-                <div class="mb-3">
-                    <strong class="text-primary">End Date:</strong> 
-                    <span id="end-date" class="text-secondary">10/02/2025</span>
-                </div>
-                <div class="mb-3">
-                    <strong class="text-primary">Description:</strong>
-                    <p id="description" class="text-secondary">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis cupiditate, minima a asperiores at magnam autem aliquam sit reprehenderit accusamus.
-                    </p>
-                </div>
-            </div>
-            <div class="modal-footer border-0 bg-light rounded-bottom">
-                <button type="button" class="btn btn-success w-100 mb-2">Approve</button>
-                <button type="button" class="btn btn-danger w-100">Reject</button>
             </div>
         </div>
     </div>
-</div>
 
-    
+
 
 
 

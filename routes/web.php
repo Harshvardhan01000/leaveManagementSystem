@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\dashbordController;
 use App\Http\Controllers\departmentController;
 use App\Http\Controllers\employeeController;
+use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\LeaveApprovalController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,9 +28,13 @@ Route::post('/authentication',[authController::class,'login']);
 Route::get('/logout',[authController::class,'logout']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard',[DashboardController::class,'showDashBoard']);
+    Route::get('/dashboard',[DashboardController::class,'showDashBoard'])->name('dashboard');
     Route::resource('/employee', employeeController::class); 
     Route::get('fetch-department',[departmentController::class,'fetchDepartment']);
+    Route::post('create-holiday',[HolidayController::class,'createHoliday']);
+    Route::get('leaveApproval',[LeaveApprovalController::class,'listLeaveData']);
+    Route::get('view-leave/{id}',[LeaveApprovalController::class,'viewLeave']);
+    Route::get('leave-status/{id}',[LeaveApprovalController::class,'leaveStatusUpdate']);
 //     Route::get('/employeeView',function(){
 //         return view('userPages.viewPage');
 //     });
@@ -53,9 +59,7 @@ Route::middleware('auth')->group(function () {
 // Route::any('/dashboard', function () {
 //     return view('admin.welcome');
 // });
-Route::get('leaveApproval',function(){
-    return view('admin.leaveApproval');
-});
+
 // Route::get('employee',function(){
 //     return view('admin.employee');
 // });

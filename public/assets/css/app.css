@@ -16216,25 +16216,7 @@ main {
 }
 
 /* Table Styling */
-.table {
-        width: 100%;
-        margin-bottom: 1rem;
-        color: #212529;
-        min-width: 800px;
-        /* Ensures table maintains structure on smaller screens */
-}
 
-.table th,
-.table td {
-        vertical-align: middle;
-        padding: 12px;
-        white-space: nowrap;
-}
-
-.table thead th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-}
 
 /* Icon Styling */
 .edit-icon,

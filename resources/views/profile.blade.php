@@ -40,7 +40,7 @@
                                     <h5 class="card-title mb-0">Profile Details</h5>
                                 </div>
                                 <div class="card-body text-center">
-                                    <img src="{{ asset('UserProfile/userlogo.png') }}" alt="Christina Mason"
+                                    <img src="{{ asset('UserProfile/userLogo.png') }}" alt="Christina Mason"
                                         class="img-fluid rounded-circle mb-2" width="128" height="128" />
                                     <h5 class="card-title mb-0">Christina Mason</h5>
                                     <div class="text-muted mb-2">Web Developer</div>

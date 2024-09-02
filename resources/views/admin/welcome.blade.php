@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
     <meta name="author" content="AdminKit">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="keywords"
         content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
@@ -80,17 +81,16 @@
                         </button>
                     </div>
 
-
-
                     <div class="row">
                         <div class="w-100">
                             <div class="row">
+
                                 <div class="col-sm-3">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col mt-0">
-                                                    <h5 class="card-title">Projects</h5>
+                                                    <h5 class="card-title">Approved Leaves</h5>
                                                 </div>
 
                                                 <div class="col-auto">
@@ -99,16 +99,16 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">12</h1>
+                                            <h1 class="mt-1 mb-3">{{$leavesCount->approved_count}}</h1>
                                             <div class="mb-0">
-                                                <span class="text-danger">2</span>
+                                                <span class="text-danger">{{$leavesCount->pending_count}}</span>
                                                 <span class="text-muted">Pending</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
 
+                                <div class="col-sm-3">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row">
@@ -122,9 +122,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">140</h1>
+                                            <h1 class="mt-1 mb-3">{{$EmployeeCount}}</h1>
                                             <div class="mb-0">
-                                                <span class="text-success">137</span>
+                                                <span class="text-success">{{$todayPresentCount}}</span>
                                                 <span class="text-muted">Present</span>
                                             </div>
                                         </div>
@@ -132,48 +132,45 @@
                                 </div>
 
                                 <div class="col-sm-3">
-
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col mt-0">
-                                                    <h5 class="card-title">Salary</h5>
+                                                    <h5 class="card-title">Employees with Paid Salaries</h5>
                                                 </div>
-
                                                 <div class="col-auto">
                                                     <div class="stat text-primary">
                                                         <i class="align-middle" data-feather="dollar-sign"></i>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">$21,000</h1>
+                                            <h1 class="mt-1 mb-3">{{$salaryCount->paid_count ?? 0}}</h1>
                                             <div class="mb-0">
-                                                <span class="text-success">$19,000</span>
-                                                <span class="text-muted">paid</span>
+                                                <span class="text-danger">{{$salaryCount->pending_count ?? 0}}</span>
+                                                <span class="text-muted">pending</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-3">
-
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col mt-0">
-                                                    <h5 class="card-title">Profite</h5>
+                                                    <h5 class="card-title">Upcoming Holidays This Year</h5>
                                                 </div>
 
                                                 <div class="col-auto">
                                                     <div class="stat text-primary">
-                                                        <i class="bi bi-graph-up-arrow align-middle fs-3"></i>
+                                                        <i class="bi bi-calendar-check-fill"></i>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">$5,000</h1>
+                                            <h1 class="mt-1 mb-3">{{$holidayCounts->upcoming_count}}</h1>
                                             <div class="mb-0">
-                                                <span class="text-danger">-2.25%</span>
-                                                <span class="text-muted">Since last week</span>
+                                                <span class="text-danger">{{$holidayCounts->passed_count}}</span>
+                                                <span class="text-muted">holidays have passed</span>
                                             </div>
                                         </div>
                                     </div>
@@ -185,12 +182,13 @@
                     </div>
 
                     <div class="row">
+                        
+                        {{-- attendence chart --}}
                         <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-                            {{-- attendence chart --}}
                             <div class="card flex-fill w-100">
                                 <div class="card-header">
 
-                                    <h5 class="card-title mb-0">Employees Attendence</h5>
+                                    <h5 class="card-title mb-0">Employees attendance</h5>
                                 </div>
                                 <div class="card-body d-flex">
                                     <div class="align-self-center w-100">
@@ -204,11 +202,11 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Present</td>
-                                                    <td class="text-end">110</td>
+                                                    <td class="text-end">{{$EmployeeCount-$todayPresentCount}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Adsent</td>
-                                                    <td class="text-end">30</td>
+                                                    <td class="text-end">{{$todayPresentCount}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -216,8 +214,9 @@
                                 </div>
                             </div>
                         </div>
+
+                        {{-- Salary chart --}}
                         <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-                            {{-- Salary chart --}}
                             <div class="card flex-fill w-100">
                                 <div class="card-header">
 
@@ -235,11 +234,11 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Paid</td>
-                                                    <td class="text-end">110</td>
+                                                    <td class="text-end">{{$salaryCount->paid_count}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>pending</td>
-                                                    <td class="text-end">30</td>
+                                                    <td class="text-end">{{$salaryCount->pending_count}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -248,6 +247,7 @@
                             </div>
                         </div>
 
+                        {{-- holiday table  --}}
                         <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
                             <div class="card flex-fill w-100">
                                 <div class="card-header text-white">
@@ -263,22 +263,12 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @foreach ($holidayTable as $holiday)
                                                 <tr>
-                                                    <td>Project Apollo</td>
-                                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
+                                                    <td>{{$holiday->holiday_name}}</td>
+                                                    <td class="d-none d-xl-table-cell">{{$holiday->holiday_date}}</td>
                                                 </tr>
-                                                <tr>
-                                                    <td>Project Apollo</td>
-                                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Project Apollo</td>
-                                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Project Apollo</td>
-                                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -337,7 +327,7 @@
                             </div>
                             <div class="mb-3 col-12">
                                 <label for="holidayDate" class="form-label">Holiday Date</label>
-                                <input type="date" class="form-control" id="holidayDate" name="holidayDate"
+                                <input type="date" class="form-control" id="holiday_date" name="holidayDate"
                                     required>
                                 <div class="invalid-feedback">Holiday date is required.</div>
                             </div>
@@ -348,8 +338,7 @@
                                 <div class="invalid-feedback">Description is required.</div>
                             </div>
                             <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn"
-                                    style="background-color: #343a40; color: #fff;">Save Holiday</button>
+                                <button type="submit" class="btn" style="background-color: #343a40; color: #fff;">Save Holiday</button>
                             </div>
                         </div>
                     </form>
@@ -357,8 +346,12 @@
             </div>
         </div>
     </div>
-
-
+    <script>
+        let todayPresentCount = @json($todayPresentCount);
+        let absentCount = @json($EmployeeCount-$todayPresentCount);
+        let salaryCount = @json($salaryCount);
+        let holidays = @json($holydayDate);
+    </script>
     <script src="assets/js/app.js"></script>
     <script src="{{asset('assets/js/dashboard.js')}}"></script>
 

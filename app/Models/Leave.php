@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -37,5 +38,12 @@ class Leave extends Model
         static::creating(function ($model) {
             $model->id = (string) Str::uuid();
         });
+    }
+    public function getLeaveType(){
+        return $this->belongsTo(LeaveType::class,'leave_type_id','id');
+    }
+   
+    public function getEmployee(){
+        return $this->belongsTo(Employee::class,'employee_id','id');
     }
 }

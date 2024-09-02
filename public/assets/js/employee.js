@@ -1,6 +1,12 @@
 $(document).ready(function() {
     $('.sidebar-item').removeClass('active');
     $('#employee').addClass('active');  
+    
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
     // Initialize validation
     $('#editEmployeeForm').validate({
