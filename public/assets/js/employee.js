@@ -1,3 +1,27 @@
+function getDepartment(employeeData = null) {
+    $.ajax({
+        type: 'GET',
+        url: 'fetch-department',
+        success: function (data) {
+            if (data) {
+                $('#department').empty();
+                $('#department').append(`<option val="" style="display:none">select</option>`);
+                data.forEach(element => {
+                    if (employeeData && employeeData.department_details.id == element.id) {
+                        $('#department').append(
+                            `<option value=${element.id} selected>${element.department_name}</option>`
+                        );
+                    } else {
+                        $('#department').append(
+                            `<option value=${element.id}>${element.department_name}</option>`
+                        );
+                    }
+
+                });
+            }
+        }
+    });
+}
 $(document).ready(function() {
     $('.sidebar-item').removeClass('active');
     $('#employee').addClass('active');  
@@ -113,12 +137,11 @@ $(document).ready(function() {
         e.preventDefault(); // Prevent default form submission
 
         if ($(this).valid()) {
-            let method = $('#_method').val();
-            let url = (method == 'post') ? '/employee' : `/employee/${$('#id').val()}`;
+            let url = ($('#_method').val() == 'post') ? '/employee' : `/employee/${$('#id').val()}`;
 
             $.ajax({
                 url: url,
-                method: method,
+                method: "POST",
                 data: new FormData(this),
                 processData: false,
                 contentType: false,
@@ -150,6 +173,7 @@ $(document).ready(function() {
         $('#editEmployeeForm').trigger('reset');
         $('#editEmployeeForm').find('.form-control').removeClass('is-invalid');
         setupModal('add');
+        getDepartment();
         $('#editEmployeeModal').modal('show');
     });
 

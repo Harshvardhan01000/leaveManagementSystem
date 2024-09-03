@@ -27,38 +27,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-    <style>
-        .modal-content {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-header {
-            background-color: #343a40;
-            color: #fff;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .modal-header .btn-close {
-            background-color: #f8f9fa;
-            border: none;
-            box-shadow: none;
-        }
-
-        .modal-title {
-            color: #fff;
-        }
-
-        .modal-body {
-            background-color: #f8f9fa;
-        }
-
-        .btn-save {
-            background-color: #343a40;
-            color: #fff;
-        }
-    </style>
+    
 </head>
 
 <body>

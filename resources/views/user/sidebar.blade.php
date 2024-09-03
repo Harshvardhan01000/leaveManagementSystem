@@ -9,13 +9,12 @@
             <li class="sidebar-header">
                 Pages
             </li>
-
-            <li class="sidebar-item active" id="dashboard">
-                <a class="sidebar-link" href="/dashboard">
-                    <i class="align-middle" data-feather="sliders"></i> <span
-                        class="align-middle">Dashboard</span>
-                </a>
-            </li>
+        <li class="sidebar-item active" id="dashboard">
+            <a class="sidebar-link" href="{{ route('dashboard') }}">
+                <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+            </a>
+        </li>
+        
 
             <li class="sidebar-item" id="leaves">
                 <a class="sidebar-link" href="/user/leaves">
@@ -26,7 +25,7 @@
             <li class="sidebar-item" id="salary">
                 <a class="sidebar-link" href="/user/salary">
                     <i class="bi bi-bank align-middle fs-4"></i>
-                  <span class="align-middle">Salary</span>
+                    <span class="align-middle">Salary</span>
                 </a>
             </li>
         </ul>

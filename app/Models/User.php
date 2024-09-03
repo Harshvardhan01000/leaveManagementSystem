@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     // Define the primary key as a UUID
     protected $primaryKey = 'id';
@@ -59,13 +59,18 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-     // Automatically generate UUID for new records
-     protected static function boot()
-     {
-         parent::boot();
- 
-         static::creating(function ($model) {
-             $model->id = (string) Str::uuid();
-         });
-     }
+    // Automatically generate UUID for new records
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->id = (string) Str::uuid();
+        });
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'user_id', 'id');
+    }
 }

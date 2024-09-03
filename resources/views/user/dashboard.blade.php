@@ -32,7 +32,9 @@
 
 <body>
     <div class="wrapper">
-
+        <script>
+            let employeeId = @json($Employee->id);
+        </script>
         @include('user.sidebar')
 
         <div class="main">
@@ -44,13 +46,6 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h1 class="h3 d-inline align-middle">Dashboard</h1>
-                        {{-- @if (Auth()->user()->role) --}}
-                            {{-- <button class="btn btn-outline-secondary" data-bs-toggle="modal"
-                                data-bs-target="#saralyEdit">
-                                Edit Salary
-                            </button> --}}
-                        {{-- @endif --}}
-
                     </div>
                     <div class="row">
                         <div class="col-md-4 col-xl-3">
@@ -59,10 +54,12 @@
                                     <h5 class="card-title mb-0">Profile Details</h5>
                                 </div>
                                 <div class="card-body text-center">
-                                    <img src="{{ asset('UserProfile/' . Auth::user()->image) }}"  alt="Christina Mason"
-                                        class="img-fluid rounded-circle mb-2" width="128" height="128" />
-                                    <h5 class="card-title mb-0">{{Auth::user()->first_name}} {{Auth::user()->last_name}}</h5>
-                                    <div class="text-muted mb-2">{{$employee->designation}}</div>
+                                    <img src="{{ asset('UserProfile/' . $Employee->userDetails->image) }}"
+                                        alt="Christina Mason" class="img-fluid rounded-circle mb-2" width="128"
+                                        height="128" />
+                                    <h5 class="card-title mb-0">{{ $Employee->userDetails->first_name }}
+                                        {{ $Employee->userDetails->last_name }}</h5>
+                                    <div class="text-muted mb-2">{{ $Employee->designation }}</div>
 
                                     <div>
                                         <a class="btn btn-primary btn-sm" href="#">Follow</a>
@@ -95,10 +92,12 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-8 col-xl-9">
+
+                            {{-- Attedance Chart --}}
                             <div class="card flex-fill w-100">
                                 <div class="card-header">
-
                                     <h5 class="card-title mb-0">Attedance Chart</h5>
                                 </div>
                                 <div class="card-body py-3">
@@ -107,10 +106,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card flex-fill w-100">
-                                <div class="card-header">
 
-                                    <h5 class="card-title mb-0">salary Chart</h5>
+                            {{-- Salary Chart --}}
+                            <div class="card flex-fill w-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Salary Chart</h5>
+                                    <!-- Filter Dropdown -->
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle w-150" type="button"
+                                            id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span id="selectedFilter">Full Year</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end mt-5"
+                                            aria-labelledby="filterDropdown">
+                                            <li><a class="dropdown-item" href="#"
+                                                    data-duration="last_6_months">Last 6 Months</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                    data-duration="full_year">Full Year</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="card-body py-3">
                                     <div class="chart chart-sm">
@@ -120,6 +134,10 @@
                             </div>
 
 
+
+
+
+                            {{-- Leave Details --}}
                             <div class="card mb-3">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">Leave Details</h5>
@@ -134,32 +152,13 @@
                                                 <th class="d-none d-xl-table-cell">End Date</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><span class="badge bg-success">Casual Leave</span></td>
-                                                <td><span class="text-info">pending</span></td>
-                                                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge bg-success">Casual Leave</span></td>
-                                                <td><span class="text-info">pending</span></td>
-                                                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge bg-success">Casual Leave</span></td>
-                                                <td><span class="text-info">pending</span></td>
-                                                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                            </tr>
-
-
-
+                                        <tbody id="leave-details-body">
+                                            <!-- Leave details will be inserted here -->
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+
 
 
 
@@ -173,42 +172,7 @@
         </div>
     </div>
 
-    {{-- holiday modal --}}
-    <div class="modal fade" id="saralyEdit" tabindex="-1" aria-labelledby="saralyEditLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="saralyEditLabel">Salary Form</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="holidayForm">
-                        <div class="mb-3">
-                            <label for="basicSalary" class="form-label">Basic Salary</label>
-                            <input type="number" class="form-control" id="basicSalary" name="basicSalary"
-                                value="30000" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="allowances" class="form-label">Allowances</label>
-                            <input type="number" class="form-control" id="allowances" name="allowances"
-                                value="5000" required>
-                        </div>
-                        <div class="mb-3 text-danger">
-                            <label for="deduction" class="form-label">Deduction</label>
-                            <input type="number" class="form-control text-danger" id="deduction" name="deduction"
-                                value="2000" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="paymentDate" class="form-label">Payment Date</label>
-                            <input type="date" class="form-control" id="paymentDate" name="paymentDate"
-                                value="2024-08-29" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Edit Salary</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <script src="{{ asset('assets/js/userDashboard.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
 

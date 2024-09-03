@@ -44,8 +44,17 @@ class Employee extends Model
     {
         return $this->belongsTo(User::class,'user_id','id');
     }
+
     public function departmentDetails()
     {
         return $this->belongsTo(Department::class,'department_id','id');
+    }
+
+    public function salaryDetails(){
+        return $this->hasMany(Salary::class,'employee_id','id');
+    }    
+
+    public function leave(){
+        return $this->hasMany(Leave::class,'employee_id','id');
     }
 }

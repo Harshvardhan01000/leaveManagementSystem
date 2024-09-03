@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function showDashBoard()
+    public function showDashBoard(Request $request)
     {
         $user = Auth::user();
         $employee = Employee::where('user_id', $user->id)->first();
@@ -63,7 +63,9 @@ class DashboardController extends Controller
                 'holidayCounts'
             ));
         } else {
-            return view('user.dashboard', compact('employee'));
+            $Employee = Employee::where('user_id',Auth::user()->id)->first();
+            $Employee->load('departmentDetails', 'userDetails');
+            return view('user.dashboard', compact('Employee'));
         }
     }
 }

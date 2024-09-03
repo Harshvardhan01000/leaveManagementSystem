@@ -26,42 +26,38 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-</head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+    </head>
 
 <body>
     <div class="wrapper">
-
         @include('component.sidebar')
-
         <div class="main">
-
             @include('component.navbar')
-
             <main class="content">
                 <div class="container-fluid p-0">
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h1 class="h3 d-inline align-middle">Profile</h1>
-                        {{-- @if (Auth()->user()->role) --}}
-                            <button class="btn btn-outline-secondary" data-bs-toggle="modal"
-                                data-bs-target="#saralyEdit">
-                                Edit Salary
-                            </button>
-                        {{-- @endif --}}
-
+                        <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#saralyEdit">
+                            Edit Salary
+                        </button>
                     </div>
                     <div class="row">
+
                         <div class="col-md-4 col-xl-3">
                             <div class="card mb-3">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">Profile Details</h5>
                                 </div>
                                 <div class="card-body text-center">
-                                    <img src="{{ asset('UserProfile/userlogo.png') }}" alt="Christina Mason"
-                                        class="img-fluid rounded-circle mb-2" width="128" height="128" />
-                                    <h5 class="card-title mb-0">Christina Mason</h5>
-                                    <div class="text-muted mb-2">Web Developer</div>
+                                    <img src="{{ asset('UserProfile/' . $Employee->userDetails->image) }}"
+                                        alt="Christina Mason" class="img-fluid rounded-circle mb-2" width="128"
+                                        height="128" />
+                                    <h5 class="card-title mb-0">{{ $Employee->userDetails->first_name }}
+                                        {{ $Employee->userDetails->last_name }}</h5>
+                                    <div class="text-muted mb-2">{{ $Employee->designation }}</div>
 
                                     <div>
                                         <a class="btn btn-primary btn-sm" href="#">Follow</a>
@@ -94,10 +90,12 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-8 col-xl-9">
+
+                            {{-- Attedance Chart --}}
                             <div class="card flex-fill w-100">
                                 <div class="card-header">
-
                                     <h5 class="card-title mb-0">Attedance Chart</h5>
                                 </div>
                                 <div class="card-body py-3">
@@ -106,10 +104,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card flex-fill w-100">
-                                <div class="card-header">
 
-                                    <h5 class="card-title mb-0">salary Chart</h5>
+                            {{-- Salary Chart --}}
+                            <div class="card flex-fill w-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Salary Chart</h5>
+                                    <!-- Filter Dropdown -->
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle w-150" type="button"
+                                            id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span id="selectedFilter">Full Year</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end mt-4 pt-1"
+                                            aria-labelledby="filterDropdown">
+                                            <li><a class="dropdown-item" href="#"
+                                                    data-duration="last_6_months">Last 6 Months</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                    data-duration="full_year">Full Year</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="card-body py-3">
                                     <div class="chart chart-sm">
@@ -119,6 +132,10 @@
                             </div>
 
 
+
+
+
+                            {{-- Leave Details --}}
                             <div class="card mb-3">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">Leave Details</h5>
@@ -133,32 +150,13 @@
                                                 <th class="d-none d-xl-table-cell">End Date</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><span class="badge bg-success">Casual Leave</span></td>
-                                                <td><span class="text-info">pending</span></td>
-                                                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge bg-success">Casual Leave</span></td>
-                                                <td><span class="text-info">pending</span></td>
-                                                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge bg-success">Casual Leave</span></td>
-                                                <td><span class="text-info">pending</span></td>
-                                                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                            </tr>
-
-
-
+                                        <tbody id="leave-details-body">
+                                            <!-- Leave details will be inserted here -->
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+
 
 
 
@@ -202,7 +200,10 @@
                             <input type="date" class="form-control" id="paymentDate" name="paymentDate"
                                 value="2024-08-29" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Edit Salary</button>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn"
+                                style="background-color: #343a40; color: #fff;">Edit Salary</button>
+                        </div>
                     </form>
                 </div>
             </div>

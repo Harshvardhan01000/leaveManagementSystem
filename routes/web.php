@@ -35,6 +35,11 @@ Route::middleware('auth')->group(function () {
     Route::get('leaveApproval',[LeaveApprovalController::class,'listLeaveData']);
     Route::get('view-leave/{id}',[LeaveApprovalController::class,'viewLeave']);
     Route::get('leave-status/{id}',[LeaveApprovalController::class,'leaveStatusUpdate']);
+    Route::get('get-salary-details/{id}',[employeeController::class,'getSalary']);
+    Route::get('get-attendance/{id}',[employeeController::class,'getAttendance']);
+    Route::get('get-leave-data/{id}',[employeeController::class,'getLeaveData']);
+
+
 //     Route::get('/employeeView',function(){
 //         return view('userPages.viewPage');
 //     });
@@ -63,9 +68,7 @@ Route::middleware('auth')->group(function () {
 // Route::get('employee',function(){
 //     return view('admin.employee');
 // });
-Route::get('employee/employeeView',function(){
-    return view('admin.employeeView');
-});
+
 // Route::get('/user/dashboard',function(){
 //     return view('user.dashboard');
 // });

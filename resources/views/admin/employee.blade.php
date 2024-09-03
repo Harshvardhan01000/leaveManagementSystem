@@ -149,7 +149,7 @@
                                                 data-id="{{ $item->id }}"></i>
                                         </td>
                                         <td>
-                                            <a href="/employee/employeeView">
+                                            <a href="{{ route('employee.show', ['employee' => $item->id]) }}">
                                                 <i class="bi bi-eye text-secondary view-icon"
                                                     data-id="{{ $item->id }}"></i>
                                             </a>
