@@ -36,6 +36,9 @@ $(document).ready(function () {
             holidayName: "Please enter the holiday name.",
             holidayDate: "Please select the holiday date.",
             holidayDescription: "Please provide a brief description."
+        },
+        errorPlacement: function(error, element) {
+            error.insertAfter(element);  // Place error after the input field
         }
     });
 

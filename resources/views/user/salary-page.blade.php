@@ -26,6 +26,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         .modal-content {
             border-radius: 10px;
@@ -75,7 +77,7 @@
 <body>
     <div class="wrapper">
 
-        @include('user.sidebar')
+        @include('component.sidebar')
 
         <div class="main">
 
@@ -92,7 +94,7 @@
                     <div class="col-md-3 col-sm-6 col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-center mt-3">
-                                <h4 class="">Monthly Casual Leaves</h4>
+                                <h4 class="">Monthly Leaves</h4>
                             </div>
                             <div class="card-content">
                                 <div class="card-body">
@@ -108,7 +110,7 @@
                         </div>
                         <div class="card">
                             <div class="card-header d-flex justify-content-center mt-3">
-                                <h4 class="">This Mounth's Deduction</h4>
+                                <h4 class="">This Month's Deduction</h4>
                             </div>
                             <div class="card-content">
                                 <div class="card-body">
@@ -124,7 +126,7 @@
                         </div>
                         <div class="card">
                             <div class="card-header d-flex justify-content-center mt-3">
-                                <h4 class="">This Mounth's Allowance</h4>
+                                <h4 class="">This Month's Allowance</h4>
                             </div>
                             <div class="card-content">
                                 <div class="card-body">
@@ -142,9 +144,23 @@
 
 
                     <div class="col-9">
+                        {{-- Salary Chart --}}
                         <div class="card flex-fill w-100">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0 mt-1">salary Chart</h5>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Salary Chart</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-150" type="button"
+                                        id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="selectedFilter">Full Year</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end mt-5"
+                                        aria-labelledby="filterDropdown">
+                                        <li><a class="dropdown-item" href="#"
+                                                data-duration="last_6_months">Last 6 Months</a></li>
+                                        <li><a class="dropdown-item" href="#"
+                                                data-duration="full_year">Full Year</a></li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="card-body py-3">
                                 <div class="chart chart-sm">
@@ -204,9 +220,9 @@
         </div>
     </div>
 
-
-
-
+    <script>
+        employeeId = @json($employeeId)
+    </script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/salary.js') }}"></script>
 

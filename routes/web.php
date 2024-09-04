@@ -32,55 +32,18 @@ Route::middleware('auth')->group(function () {
     Route::resource('/employee', employeeController::class); 
     Route::get('fetch-department',[departmentController::class,'fetchDepartment']);
     Route::post('create-holiday',[HolidayController::class,'createHoliday']);
-    Route::get('leaveApproval',[LeaveApprovalController::class,'listLeaveData']);
+    Route::get('leaveApproval',[LeaveApprovalController::class,'listLeaveData'])->name('leave-approval');
     Route::get('view-leave/{id}',[LeaveApprovalController::class,'viewLeave']);
     Route::get('leave-status/{id}',[LeaveApprovalController::class,'leaveStatusUpdate']);
     Route::get('get-salary-details/{id}',[employeeController::class,'getSalary']);
     Route::get('get-attendance/{id}',[employeeController::class,'getAttendance']);
     Route::get('get-leave-data/{id}',[employeeController::class,'getLeaveData']);
+    Route::get('/leave-page',[LeaveApprovalController::class,'index']);
+    Route::get('/leave-form',[LeaveApprovalController::class,'createLeave']);
+    Route::post('/leave-submit',[LeaveApprovalController::class,'leaveStore'])->name('leave-submit');
+    Route::get('/salary-page',[employeeController::class,'salaryPage'])->name('salary-page');
+    Route::get('/profile',[authController::class,'profile'])->name('profile');
+    Route::post('/update-profile',[authController::class,'updateProfile'])->name('update-profile');
+    Route::post('/change-password',[authController::class,'changePassword'])->name('change-password');
 
-
-//     Route::get('/employeeView',function(){
-//         return view('userPages.viewPage');
-//     });
-//     Route::get('/get-individual-attendance/{id}',[attendanceController::class,'getIndividualAttendance']);
-// });
-
-// Route::get('/employeeListing', function () {
-//     return view('components.employeeListing');
-// });
-
-// Route::get('/leaveApproval', function () {
-//     return view('components.leaveApproval');
-});
-
-
-
-// testing file 
-
-// Route::get('/', function () {
-//     return view('signIn');
-// });
-// Route::any('/dashboard', function () {
-//     return view('admin.welcome');
-// });
-
-// Route::get('employee',function(){
-//     return view('admin.employee');
-// });
-
-// Route::get('/user/dashboard',function(){
-//     return view('user.dashboard');
-// });
-Route::get('user/leaves',function(){
-    return view('user.leave-page');
-});
-Route::get('user/salary',function(){
-    return view('user.salary-page');
-});
-Route::get('user/leaves/leave-form',function(){
-    return view('user.leave-form');
-});
-Route::get('/profile',function(){
-    return view('profile');
 });

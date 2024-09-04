@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class employeeController extends Controller
@@ -280,9 +279,10 @@ class employeeController extends Controller
         return response()->json($leaves);
     }
 
-    public function userDashboard(Request $request){
-        $Employee = Employee::find($request->id);
-        $Employee->load('departmentDetails', 'userDetails');
-        return view('admin.employeeView', compact('Employee'));
+    public function salaryPage(){
+        $employeeId = Employee::where('user_id',Auth::user()->id)->first()->id;
+        // $total_absent_days = 
+        return view('user.salary-page',compact('employeeId'));
     }
+
 }

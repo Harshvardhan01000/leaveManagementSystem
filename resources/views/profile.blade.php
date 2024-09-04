@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Responsive Admin & Dashboard Template based on Bootstrap 5">
     <meta name="author" content="AdminKit">
+    <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -19,11 +20,14 @@
     <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
     <div class="wrapper">
-        @include('user.sidebar')
+        @include('component.sidebar')
         <div class="main">
             @include('component.navbar')
 
@@ -34,21 +38,21 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4 col-lg-3">
+                        <div class="col-md-4 col-xl-3">
                             <div class="card mb-3">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">Profile Details</h5>
                                 </div>
-                                <div class="card-body text-center">
-                                    <img src="{{ asset('UserProfile/userLogo.png') }}" alt="Christina Mason"
-                                        class="img-fluid rounded-circle mb-2" width="128" height="128" />
-                                    <h5 class="card-title mb-0">Christina Mason</h5>
-                                    <div class="text-muted mb-2">Web Developer</div>
-
+                                <div class="card-body text-center position-relative">
+                                    <img src="{{ asset('UserProfile/' . Auth::user()->image) }}"
+                                        alt="Profile Image" class="img-fluid rounded-circle mb-2" width="128"
+                                        height="128" />
+                                    <h5 class="card-title mb-0">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h5>
+                                    <div class="text-muted mb-2">{{ $Employee->designation }}</div>
+                        
                                     <div>
                                         <a class="btn btn-primary btn-sm" href="#">Follow</a>
-                                        <a class="btn btn-primary btn-sm" href="#"><span
-                                                data-feather="message-square"></span> Message</a>
+                                        <a class="btn btn-primary btn-sm" href="#"><span data-feather="message-square"></span> Message</a>
                                     </div>
                                 </div>
                                 <hr class="my-0" />
@@ -66,9 +70,8 @@
                                     <ul class="list-unstyled mb-0">
                                         <li class="mb-1"><span data-feather="home" class="feather-sm me-1"></span>
                                             Lives in <a href="#">San Francisco, SA</a></li>
-
-                                        <li class="mb-1"><span data-feather="briefcase"
-                                                class="feather-sm me-1"></span> Works at <a href="#">GitHub</a>
+                        
+                                        <li class="mb-1"><span data-feather="briefcase" class="feather-sm me-1"></span> Works at <a href="#">GitHub</a>
                                         </li>
                                         <li class="mb-1"><span data-feather="map-pin" class="feather-sm me-1"></span>
                                             From <a href="#">Boston</a></li>
@@ -76,6 +79,7 @@
                                 </div>
                             </div>
                         </div>
+                        
 
                         <div class="col-md-8 col-lg-9">
                             <div class="card mb-3">
@@ -84,37 +88,41 @@
                                 </div>
                                 <div class="card-body">
                                     <form id="profileForm">
+                                        @csrf
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="firstName" class="form-label">First Name</label>
-                                                    <input type="text" class="form-control" id="firstName" name="firstName" value="John" required>
+                                                    <input type="text" class="form-control" id="firstName" name="first_name" value="{{Auth::user()->first_name}}" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="lastName" class="form-label">Last Name</label>
-                                                    <input type="text" class="form-control" id="lastName" name="lastName" value="Snow" required>
+                                                    <input type="text" class="form-control" id="lastName" name="last_name" value="{{Auth::user()->last_name}}" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="email" class="form-label">Email</label>
-                                                    <input type="email" class="form-control" id="email" name="email" value="John@gmail.com" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="phoneNumber" class="form-label">Phone Number</label>
-                                                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="123456879" required>
+                                                    <input type="email" class="form-control" id="email" name="email" value="{{Auth::user()->email}}" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="joiningDate" class="form-label">Joining Date</label>
-                                                    <input type="date" class="form-control" id="joiningDate" name="joiningDate" value="2024-08-29" required>
+                                                    <input type="date" class="form-control" id="joiningDate" name="joiningDate" value="{{date('Y-m-d', strtotime($Employee->joining_date))}}" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="currentSalary" class="form-label">Current Salary</label>
-                                                    <input type="number" class="form-control" id="currentSalary" name="currentSalary" value="30000" required>
+                                                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                                                    <input type="text" class="form-control" id="phoneNumber" name="phone_number" value="{{Auth::user()->phone_number}}" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="department" class="form-label">Department</label>
-                                                    <input type="text" class="form-control" id="department" name="department" value="Laravel" required>
+                                                    <select name="department" id="department" class="form-select" required>
+                                                        <option value="" style="display:none">Select</option>
+                                                        @foreach ($departments as $department)
+                                                            <option value="{{$department->id}}" {{ ($Employee->department_id == $department->id) ? 'selected' : '' }}>
+                                                                {{$department->department_name}}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -127,7 +135,7 @@
                                     <h5 class="card-title mb-0">Change Password</h5>
                                 </div>
                                 <div class="card-body">
-                                    <form id="changePasswordForm">
+                                    <form id="changePasswordForm" action="javascript:;">
                                         <div class="mb-3">
                                             <label for="currentPassword" class="form-label">Current Password</label>
                                             <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
@@ -154,12 +162,8 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function () {
-            $('.sidebar-item').removeClass('active');
-        });
-    </script>
-    {{-- <script src="{{ asset('assets/js/userDashboard.js') }}"></script> --}}
+    
+    <script src="{{ asset('assets/js/profile.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
 </body>
 

@@ -35,7 +35,7 @@
         <script>
             let employeeId = @json($Employee->id);
         </script>
-        @include('user.sidebar')
+        @include('component.sidebar')
 
         <div class="main">
 
@@ -149,7 +149,7 @@
                                                 <th>Leave Type</th>
                                                 <th class="d-none d-md-table-cell">Status</th>
                                                 <th class="d-none d-xl-table-cell">Start Date</th>
-                                                <th class="d-none d-xl-table-cell">End Date</th>
+                                                <th class="d-none d-xl-table-cell">Total Leave Day</th>
                                             </tr>
                                         </thead>
                                         <tbody id="leave-details-body">

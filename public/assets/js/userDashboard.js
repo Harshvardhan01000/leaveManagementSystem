@@ -197,7 +197,7 @@ $(document).ready(function () {
                             <td><span class="badge bg-success">${leaveType}</span></td>
                             <td><span class="text-info">${leaveStatus}</span></td>
                             <td class="d-none d-xl-table-cell">${formatDate(leave.start_date)}</td>
-                            <td class="d-none d-xl-table-cell">${formatDate(leave.end_date)}</td>
+                            <td class="d-none d-xl-table-cell">${leave.leave_days}</td>
                         </tr>`;
     
                         tbody.append(row);

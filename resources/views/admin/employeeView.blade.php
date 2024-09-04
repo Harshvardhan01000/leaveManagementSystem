@@ -147,7 +147,7 @@
                                                 <th>Leave Type</th>
                                                 <th class="d-none d-md-table-cell">Status</th>
                                                 <th class="d-none d-xl-table-cell">Start Date</th>
-                                                <th class="d-none d-xl-table-cell">End Date</th>
+                                                <th class="d-none d-xl-table-cell">Total Leave Days</th>
                                             </tr>
                                         </thead>
                                         <tbody id="leave-details-body">

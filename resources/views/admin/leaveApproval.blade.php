@@ -106,7 +106,29 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 class="h3 mb-0"><strong>Leave-Approval</strong> Table</h1>
                 </div>
-                <table class="table table-hover my-0 text-center">
+                <!-- Search Bar with Filter -->
+                <div class="search-bar mb-4">
+                    <form id="filter-form" class="d-flex" action="{{route('leave-approval')}}" method="GET">
+                        <div class="input-group">
+                            <!-- Filter Dropdown -->
+                            <select class="form-select" name="filter" aria-label="Filter by">
+                                <option value="name" {{ request('filter') == 'name' ? 'selected' : '' }}>Name</option>
+                                <option value="department" {{ request('filter') == 'department' ? 'selected' : '' }}>
+                                    Department</option>
+                                <option value="leave_type" {{ request('filter') == 'leave_type' ? 'selected' : '' }}>
+                                    Leave Type</option>
+                            </select>
+                            <!-- Search Input -->
+                            <input type="text" class="form-control" name="search" placeholder="Search..."
+                                value="{{ request('search') }}">
+                            <!-- Search Button -->
+                            <button class="btn btn-secondary" type="submit">Search</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Table -->
+                <table class="table table-hover my-0 text-center" id="leaveTable">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -121,30 +143,34 @@
                     <tbody>
                         @foreach ($leaveList as $leave)
                             <tr>
-                                <td>{{$leave->getEmployee->userDetails->first_name ?? 0}} {{$leave->getEmployee->userDetails->last_name ?? 0}}</td>
-                                <td>{{$leave->getEmployee->departmentDetails->department_name ?? 0}}</td>
-                                <td><span class="text">{{$leave->getLeaveType->leave_type_name ?? 0}}</span></td>
-                                <td class="d-none d-xl-table-cell">{{\Carbon\Carbon::parse($leave->start_date)->format('d F Y') ?? 0}}</td>
-                                <td class="d-none d-xl-table-cell">{{\Carbon\Carbon::parse($leave->end_date)->format('d F Y') ?? 0}}</td>
+                                <td>{{ $leave->getEmployee->userDetails->first_name ?? 0 }}
+                                    {{ $leave->getEmployee->userDetails->last_name ?? 0 }}</td>
+                                <td>{{ $leave->getEmployee->departmentDetails->department_name ?? 0 }}</td>
+                                <td><span class="text">{{ $leave->getLeaveType->leave_type_name ?? 0 }}</span></td>
+                                <td class="d-none d-xl-table-cell">
+                                    {{ \Carbon\Carbon::parse($leave->start_date)->format('d F Y') ?? 0 }}</td>
+                                <td class="d-none d-xl-table-cell">
+                                    {{ \Carbon\Carbon::parse($leave->end_date)->format('d F Y') ?? 0 }}</td>
                                 <td class="d-none d-md-table-cell fs-4 text-secondary"><i class="bi bi-eye"
-                                        id='view' data-id={{$leave->id ?? 0}} data-bs-toggle="modal" data-bs-target="#leaveModal"></i></td>
+                                        id='view' data-id={{ $leave->id ?? 0 }} data-bs-toggle="modal"
+                                        data-bs-target="#leaveModal"></i></td>
                                 @if ($leave->leave_status == 'approved')
-                                <td><span class="badge bg-success">{{$leave->leave_status}}</span></td>
+                                    <td><span class="badge bg-success">{{ $leave->leave_status }}</span></td>
                                 @else
-                                <td><span class="badge bg-info">{{$leave->leave_status}}</span></td>
+                                    <td><span class="badge bg-info">{{ $leave->leave_status }}</span></td>
                                 @endif
                             </tr>
                         @endforeach
-                        
                     </tbody>
                 </table>
-                 <!-- Pagination Controls -->
-                 <div class="d-flex justify-content-between align-items-center mt-4">
+                <!-- Pagination Controls -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
                     <div>
                         {{ $leaveList->links('vendor.pagination.custom-pagination') }}
                     </div>
                     <div>
-                        Showing {{ $leaveList->firstItem() }} to {{ $leaveList->lastItem() }} of {{ $leaveList->total() }}
+                        Showing {{ $leaveList->firstItem() }} to {{ $leaveList->lastItem() }} of
+                        {{ $leaveList->total() }}
                         entries
                     </div>
                 </div>

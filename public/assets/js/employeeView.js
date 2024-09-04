@@ -189,19 +189,19 @@ $(document).ready(function () {
             url: '/get-leave-data/' + id,
             method: 'GET',
             success: function (response) {
-                var tbody = $('#leave-details-body');
+                let tbody = $('#leave-details-body');
                 tbody.empty(); // Clear existing rows
 
                 // Loop through each leave record and append to table
                 $.each(response, function (index, leave) {
-                    var leaveType = leave.get_leave_type.leave_type_name;
-                    var leaveStatus = leave.leave_status.charAt(0).toUpperCase() + leave.leave_status.slice(1); // Capitalize first letter
+                    let leaveType = leave.get_leave_type.leave_type_name;
+                    let leaveStatus = leave.leave_status.charAt(0).toUpperCase() + leave.leave_status.slice(1); // Capitalize first letter
 
-                    var row = `<tr>
+                    let row = `<tr>
                         <td><span class="badge bg-success">${leaveType}</span></td>
                         <td><span class="text-info">${leaveStatus}</span></td>
                         <td class="d-none d-xl-table-cell">${formatDate(leave.start_date)}</td>
-                        <td class="d-none d-xl-table-cell">${formatDate(leave.end_date)}</td>
+                        <td class="d-none d-xl-table-cell">${leave.leave_days}</td>
                     </tr>`;
 
                     tbody.append(row);

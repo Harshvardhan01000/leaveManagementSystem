@@ -24,13 +24,14 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
     <link href="{{asset('assets/css/app.css')}}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    
 </head>
 
 <body>
     <div class="wrapper">
 
-        @include('user.sidebar')
+        @include('component.sidebar')
 
         <div class="main">
 
@@ -40,7 +41,6 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 class="h3 d-inline align-middle">Leave</h1>
                 </div>
-
                 {{-- cards --}}
                 <div class="row">
                     <div class="col-md-3 col-sm-6 col-12">
@@ -53,7 +53,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                Taken : 0.0
+                                                Taken : {{$leave['casual_leave']->month_leave_days}}
                                             </h4>
                                         </div>
                                     </div>
@@ -71,7 +71,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                Taken : 0.0
+                                                Taken : {{$leave['casual_leave']->year_leave_days}}
                                             </h4>
                                         </div>
                                     </div>
@@ -89,7 +89,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                Taken : 0.0
+                                                Taken : {{$leave['medical_leave']->month_leave_days}}
                                             </h4>
                                         </div>
                                     </div>
@@ -107,7 +107,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                Taken : 0.0
+                                                Taken : {{$leave['medical_leave']->year_leave_days}}
                                             </h4>
                                         </div>
                                     </div>
@@ -116,29 +116,28 @@
                         </div>
                     </div>
                 </div>
-                {{-- chart --}}
-                    <div class="card flex-fill w-100">
-                        <div class="card-header">
-
-                            <h5 class="card-title mb-0">Attedance Chart</h5>
-                        </div>
-                        <div class="card-body py-3">
-                            <div class="chart chart-sm">
-                                <canvas id="chartjs-dashboard-line"></canvas>
-                            </div>
+                {{-- Attedance Chart --}}
+                <div class="card flex-fill w-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Attedance Chart</h5>
+                    </div>
+                    <div class="card-body py-3">
+                        <div class="chart chart-sm">
+                            <canvas id="chartjs-dashboard-line"></canvas>
                         </div>
                     </div>
-
+                </div>
+                
+                    {{-- Leave Details --}}
                     <div class="card mb-3">
                         <div class="d-flex justify-content-between align-items-center m-4 mb-0">
                             <h5 class="h3 d-inline align-middle">Leave</h5>
-                            <a href="leaves/leave-form">
+                            <a href="/leave-form">
                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
                                 data-bs-target="#saralyEdit">
                                 Add Leave
                             </button>
                             </a>
-                            
                         </div>
                         <div class="card-body">
                             <table class="table table-hover my-0 text-center">
@@ -147,31 +146,11 @@
                                         <th>Leave Type</th>
                                         <th class="d-none d-md-table-cell">Status</th>
                                         <th class="d-none d-xl-table-cell">Start Date</th>
-                                        <th class="d-none d-xl-table-cell">End Date</th>
+                                        <th class="d-none d-xl-table-cell">Total Leave Days</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><span class="badge bg-success">Casual Leave</span></td>
-                                        <td><span class="text-info">pending</span></td>
-                                        <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                        <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="badge bg-success">Casual Leave</span></td>
-                                        <td><span class="text-info">pending</span></td>
-                                        <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                        <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="badge bg-success">Casual Leave</span></td>
-                                        <td><span class="text-info">pending</span></td>
-                                        <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                        <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    </tr>
-
-
-
+                                <tbody id="leave-details-body">
+                                    <!-- Leave details will be inserted here -->
                                 </tbody>
                             </table>
                         </div>
@@ -181,6 +160,9 @@
             @include('component.footer')
         </div>
     </div>
+    <script>
+        employeeId = @json($employeeId)
+    </script>
     <script src="{{asset("assets/js/app.js")}}"></script>
     <script src="{{ asset('assets/js/userLeave.js') }}"></script>
 

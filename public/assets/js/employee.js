@@ -159,7 +159,7 @@ $(document).ready(function() {
                 error: function(xhr, status, error) {
                     Swal.fire({
                         title: 'Error!',
-                        text: 'There was an error submitting the form. Please try again.',
+                        text: error,
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });

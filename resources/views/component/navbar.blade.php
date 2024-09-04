@@ -25,7 +25,7 @@
                         <span>{{$employee->designation ?? 'Web Developer'}}</span>
                     </div>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/profile">
+                    <a class="dropdown-item" href="{{route("profile")}}">
                         <i class="align-middle me-1" data-feather="user"></i> Profile
                     </a>
                     <div class="dropdown-divider"></div>

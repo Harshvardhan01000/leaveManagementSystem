@@ -175,13 +175,6 @@
                     </div>
                 </div>
             </main>
-
-
-
-
-
-
-
             @include('component.footer')
         </div>
     </div>
@@ -234,10 +227,7 @@
                         <div class="mb-3 col-6">
                             <label for="editDepartment" class="form-label">Department</label>
                             <select name="department" id="department" class="form-select" required>
-                                <option value="" style="display:none">select</option>
-                                <option value="8ae1668f-603e-11ef-b610-74563c9fb36e">Laravel</option>
-                                <option value="9c4a72c0-603e-11ef-b610-74563c9fb36e">Node</option>
-                                <option value="a4b7a4b6-603e-11ef-b610-74563c9fb36e">React</option>
+                                
                             </select>
                         </div>
                         <div class="mb-3 col-6">
