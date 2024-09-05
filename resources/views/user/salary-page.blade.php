@@ -86,7 +86,7 @@
             <main class="content">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 class="h3 mb-0"><strong>Salary</strong> Details</h1>
-                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#payslipModal">
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#payslipModal" id="payslip">
                         generate payslip
                     </button>
                 </div>
@@ -101,7 +101,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                Taken : 0.0
+                                                Taken : {{$leaveCount}}
                                             </h4>
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                $ 0.0
+                                                $ {{$salary->deductions}}
                                             </h4>
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                $ 0.0
+                                                $ {{$salary->allowances}}
                                             </h4>
                                         </div>
                                     </div>
@@ -183,7 +183,7 @@
             <div class="modal-content border-0 shadow-lg rounded-4">
                 <div class="modal-header bg-light border-0 rounded-top">
                     <h5 class="modal-title text-dark fw-bold" id="payslipModalLabel">
-                        <i class="bi bi-receipt me-2"></i> Payslip for John Snow
+                        <i class="bi bi-receipt me-2"></i> Payslip for <span class="name"></span>
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -191,9 +191,9 @@
                     <div class="row mb-3">
                         <div class="col-12">
                             <h6 class="text-primary fw-semibold">Employee Details</h6>
-                            <p><strong>Name:</strong> John Snow</p>
-                            <p><strong>Designation:</strong> Head of Department</p>
-                            <p><strong>Department:</strong> Laravel</p>
+                            <p><strong>Name:</strong> <span id="name"></span></p>
+                            <p><strong>Designation:</strong> <span id="designation"></span></p>
+                            <p><strong>Department:</strong> <span id="department"></span></p>
                         </div>
                     </div>
                     <hr>
@@ -201,19 +201,19 @@
                         <div class="col-12">
                             <h6 class="text-primary fw-semibold">Salary Details</h6>
                             <div class="p-3 bg-light rounded-3">
-                                <p><strong>Basic Salary:</strong> $30,000</p>
-                                <p><strong>Allowances:</strong> $5,000</p>
-                                <p><strong>Deductions:</strong> $1,000</p>
-                                <p><strong>Net Salary:</strong> $34,000</p>
-                                <p><strong>Payment Date:</strong> 29/08/2024</p>
+                                <p><strong>Basic Salary:</strong> $<span id="basicSalary"></span></p>
+                                <p><strong>Allowances:</strong> $<span id="allowances"></span></p>
+                                <p><strong>Deductions:</strong> $<span id="deductions"></span></p>
+                                <p><strong>Net Salary:</strong> $<span id="netSalary"></span></p>
+                                <p><strong>Payment Date:</strong> <span id="paymentDate"></span></p>
                                 <p><strong>Payment Status:</strong> <span
-                                        class="badge bg-warning text-dark">Pending</span></p>
+                                        class="badge bg-warning text-dark" id="paymentStatus"></span></p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer bg-light border-0 rounded-bottom">
-                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Download</button>
+                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal" id="download">Download</button>
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -223,8 +223,8 @@
     <script>
         employeeId = @json($employeeId)
     </script>
-    <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/salary.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}"></script>
 
 </body>
 

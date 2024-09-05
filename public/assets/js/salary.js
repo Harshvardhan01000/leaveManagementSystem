@@ -93,8 +93,56 @@ $(document).ready(function(){
           // Fetch data for the selected duration and reload the salary chart
           fetchSalaryData(duration);
       });
-  
+      
+      $('#payslip').on('click',function(){
+        $.ajax({
+            type:"GET",
+            data:{
+                'employeeId':employeeId
+            },
+            url:'/get-payslip-data',
+            success:function(response){
+                $('.name').text(`${response.employee.user_details.first_name} ${response.employee.user_details.last_name}`);
+                $('#name').text(`${response.employee.user_details.first_name} ${response.employee.user_details.last_name}`);
+                $('#department').text(response.employee.department_details.department_name);
+                $('#designation').text(response.employee.designation);
+                $('#basicSalary').text(`${response.basic_salary}`);
+                $('#allowances').text(`${response.allowances}`);
+                $('#deductions').text(`${response.deductions}`);
+                $('#netSalary').text(`${response.net_salary}`);
+                $('#paymentDate').text(`${response.payment_date ? response.payment_date : ""}`);
+                $('#paymentStatus').text(`${response.payment_status}`);
+            }
+        });
+      });
+      $('#download').on('click', function() {
+        // AJAX request to get the PDF URL
+        $.ajax({
+            url: '/download-payslip',
+            method: 'GET',
+            data:{'employeeId':employeeId},
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(data, status, xhr) {
+                // Create a URL for the blob data
+                var blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                var url = window.URL.createObjectURL(blob);
+
+                // Create a link element
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'payslip.pdf'; // File name
+                document.body.appendChild(a);
+                a.click(); // Trigger the download
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url); // Clean up
+            },
+            // error: function(xhr, status, error) {
+            //     alert(error);
+            // }
+        });
+    });
 });
- //salary chart
 
  

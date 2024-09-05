@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PasswordResetmail;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str; 
 
 class authController extends Controller
 {
@@ -89,5 +92,40 @@ class authController extends Controller
     {
         Auth::logout();
         return redirect('/');
+    }
+
+    public function resetPassword(){
+        return view('reset-password');
+    }
+
+    public function setPassword(Request $request)
+    {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        // Generate a random password
+        $newPassword = Str::random(8); // Use Str::random
+
+        // Find the user by email
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            // Update the user's password
+            $user->password = Hash::make($newPassword);
+            $user->save();
+
+            // Send an email with the new password
+            Mail::to($user->email)->send(new PasswordResetmail($user->first_name,$newPassword));
+
+            return redirect()->back()->with('status', 'A new password has been sent to your email.');
+        } else {
+            return redirect()->back()->withErrors(['email' => 'The provided email address does not exist.']);
+        }
     }
 }

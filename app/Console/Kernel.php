@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('app:create-salary-record')->monthlyOn(1, '00:00');
+        $schedule->command('app:salary-status-update')->daily();
     }
 
     /**
@@ -24,4 +26,9 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+    protected $commands = [
+        'App\Console\Commands\CreateSalaryRecord',
+        'App\Console\Commands\SalaryStatusUpdate',
+    ];
 }

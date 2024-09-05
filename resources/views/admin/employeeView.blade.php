@@ -27,6 +27,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
    
     </head>
 
@@ -40,7 +41,7 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h1 class="h3 d-inline align-middle">Profile</h1>
-                        <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#saralyEdit">
+                        <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#saralyEdit" id="salaryFormButton">
                             Edit Salary
                         </button>
                     </div>
@@ -170,7 +171,7 @@
         </div>
     </div>
 
-    {{-- holiday modal --}}
+    {{-- salary modal --}}
     <div class="modal fade" id="saralyEdit" tabindex="-1" aria-labelledby="saralyEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -179,7 +180,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="holidayForm">
+                    <form id="salaryForm">
                         <div class="mb-3">
                             <label for="basicSalary" class="form-label">Basic Salary</label>
                             <input type="number" class="form-control" id="basicSalary" name="basicSalary"

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendRegistrationMail;
 use App\Models\Employee;
+use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
 use GuzzleHttp\Psr7\Message;
@@ -87,6 +89,7 @@ class employeeController extends Controller
             'joining_date' => $request->joining_date,
             'current_salary' => $request->current_salary,
         ]);
+        SendRegistrationMail::dispatch($user,$request->password);
         return response()->json([
             "Message" => "employee created successfully"
         ]);
@@ -162,127 +165,6 @@ class employeeController extends Controller
         return response()->json([
             "Message" => "record delete successfully"
         ]);
-    }
-
-    public function getSalary($id,Request $request)
-    {
-        // Find the employee by ID
-        $Employee = Employee::find($id);
-
-        // Determine the start and end date based on the duration parameter
-        switch ($request->duration) {
-            case 'current_month':
-                $startDate = now()->startOfMonth();
-                $endDate = now()->endOfMonth();
-                break;
-
-            case 'last_6_months':
-                $startDate = now()->subMonths(6)->startOfMonth();
-                $endDate = now()->endOfMonth();
-                break;
-
-            case 'full_year':
-                $startDate = now()->startOfYear();
-                $endDate = now()->endOfYear();
-                break;
-
-            default:
-                return response()->json(['error' => 'Invalid duration parameter'], 400);
-        }
-
-        $salary = $Employee->salaryDetails()
-        ->whereBetween('payment_date', [$startDate, $endDate]);
-
-        if (!$salary) {
-            return response()->json(['error' => 'No salary records found for the given duration'], 404);
-        }
-
-        // Prepare the salary data for the response
-        $salaryChart['payment_date'] = $salary->pluck('payment_date');
-        $salaryChart['basic_salary'] = $salary->pluck('basic_salary');
-        $salaryChart['allowances'] = $salary->pluck('allowances');
-        $salaryChart['deductions'] = $salary->pluck('deductions');
-
-        return response()->json($salaryChart);
-    }
-
-
-    public function getAttendance($id)
-    {
-        $Employee = Employee::find($id);
-        $startDate = Carbon::now()->subMonths(12)->startOfMonth(); // Adjust as needed for the range
-        $endDate = Carbon::now()->endOfMonth();
-
-        // Fetch user and their attendance data within the date range
-        $Attendance = User::where('id', $Employee->user_id)
-            ->with(['attendances' => function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('attendance_date', [$startDate, $endDate]);
-            }])
-            ->first();
-
-        // Initialize arrays to hold months and attendance data
-        $monthlyData = [];
-
-        // Iterate through each attendance record
-        foreach ($Attendance->attendances as $attendance) {
-            // Format the month from the attendance date
-            $month = Carbon::parse($attendance->attendance_date)->format('F Y'); // Full month name and year
-
-            // Initialize the month if not already present
-            if (!isset($monthlyData[$month])) {
-                $monthlyData[$month] = [
-                    'present' => 0,
-                    'absent' => 0
-                ];
-            }
-
-            // Increment the count based on attendance status
-            if ($attendance->attendance_status === 'present') {
-                $monthlyData[$month]['present']++;
-            } else if ($attendance->attendance_status === 'absent') {
-                $monthlyData[$month]['absent']++;
-            }
-        }
-
-        // Prepare labels and data for response
-        $labels = array_keys($monthlyData); // Get month names
-        $presentData = array_column($monthlyData, 'present'); // Get count of present days
-        $absentData = array_column($monthlyData, 'absent'); // Get count of absent days
-
-        return response()->json([
-            'labels' => $labels,
-            'present' => $presentData,
-            'absent' => $absentData
-        ]);
-    }
-
-    public function getLeaveData($id)
-    {
-        // Find the employee by the given ID
-        $Employee = Employee::find($id);
-
-        if (!$Employee) {
-            return response()->json(['error' => 'Employee not found'], 404);
-        }
-
-        // Get the current month and year
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-
-        // Load the 'leave' relationship and filter by the current month and year
-        $leaves = $Employee->leave()
-            ->whereMonth('start_date', $currentMonth)
-            ->whereYear('start_date', $currentYear)
-            ->with('getLeaveType')->get();
-
-        // Return the leave data as JSON response
-        return response()->json($leaves);
-    }
-
-    public function salaryPage(){
-        $employeeId = Employee::where('user_id',Auth::user()->id)->first()->id;
-        // $total_absent_days = 
-        return view('user.salary-page',compact('employeeId'));
     }
 
 }

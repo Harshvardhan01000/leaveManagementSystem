@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Attendance;
+use App\Models\Holiday;
 use App\Models\Leave;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -41,8 +42,15 @@ class AddAttendanceForLeave implements ShouldQueue
         $endDate = Carbon::parse($leave->end_date);
         $employeeId = $leave->employee_id;
 
-        // Iterate through each day between start_date and end_date
-        while ($startDate->lte($endDate)) {
+         // Iterate through each day between start_date and end_date
+    while ($startDate->lte($endDate)) {
+        // Check if the current day is a holiday
+        $isHoliday = Holiday::where('holiday_date', $startDate->format('Y-m-d'))->exists();
+
+        // If today is a holiday, skip this iteration
+        if ($isHoliday) {
+            Log::info("Skipping holiday on: " . $startDate->toDateString());
+        } else {
             // Create an attendance record for each day of leave
             Attendance::updateOrCreate(
                 [
@@ -53,9 +61,10 @@ class AddAttendanceForLeave implements ShouldQueue
                     'attendance_status' => 'absent'
                 ]
             );
-
-            // Move to the next day
-            $startDate->addDay();
         }
+
+        // Move to the next day
+        $startDate->addDay();
+    }
     }
 }

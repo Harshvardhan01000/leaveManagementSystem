@@ -224,4 +224,85 @@ $(document).ready(function () {
 
     // Fetch leave data when document is ready
     fetchLeaveData(employeeId);
+
+    $('#salaryFormButton').on('click',function (){
+        $.ajax({
+            type:"GET",
+            url:'/get-current-month-salary',
+            data:{'employeeId':employeeId},
+            success:function(response){
+                $('#basicSalary').val(response.basic_salary);
+                $('#allowances').val(response.allowances);
+                $('#deduction').val(response.deductions);
+                $('#paymentDate').val(response.payment_date ? response.payment_date:"");
+            }
+        });
+    })
+
+    //salary model
+    $('#salaryForm').validate({
+        rules: {
+            basicSalary: {
+                required: true,
+                number: true,
+                min: 0
+            },
+            allowances: {
+                required: true,
+                number: true,
+                min: 0
+            },
+            deduction: {
+                required: true,
+                number: true,
+                min: 0
+            },
+            paymentDate: {
+                required: true,
+                date: true
+            }
+        },
+        messages: {
+            basicSalary: {
+                required: "Please enter the basic salary",
+                number: "Please enter a valid number",
+                min: "Basic salary cannot be negative"
+            },
+            allowances: {
+                required: "Please enter allowances",
+                number: "Please enter a valid number",
+                min: "Allowances cannot be negative"
+            },
+            deduction: {
+                required: "Please enter the deduction amount",
+                number: "Please enter a valid number",
+                min: "Deduction cannot be negative"
+            },
+            paymentDate: {
+                required: "Please select a payment date",
+                date: "Please enter a valid date"
+            }
+        },
+        errorClass: 'is-invalid',
+        errorPlacement: function(error, element) {
+            error.insertAfter(element);
+        },
+        submitHandler: function(form) {
+            // Submit form via AJAX or any other custom functionality
+            $.ajax({
+                url: '/your-salary-edit-endpoint/'.employeeId,
+                type: 'POST',
+                data: $(form).serialize(),
+                success: function(response) {
+                    // Handle the successful submission
+                    swal("Success", "Salary details updated successfully!", "success");
+                },
+                error: function(xhr) {
+                    // Handle errors
+                    swal("Error", "There was an error updating the salary.", "error");
+                }
+            });
+            return false; // Prevent default form submission
+        }
+    });
 });

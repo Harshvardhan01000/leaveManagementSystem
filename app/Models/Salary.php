@@ -36,7 +36,20 @@ class Salary extends Model
         parent::boot();
 
         static::creating(function ($model) {
+            // Generate UUID for the primary key
             $model->id = (string) Str::uuid();
+
+            // Calculate net salary (basic_salary + allowances - deductions)
+            $model->net_salary = $model->basic_salary + $model->allowances - $model->deductions;
         });
+
+        static::updating(function ($model) {
+            // Recalculate net salary on update
+            $model->net_salary = $model->basic_salary + $model->allowances - $model->deductions;
+        });
+    }
+
+    public function employee(){
+        return $this->belongsTo(Employee::class,'employee_id','id');
     }
 }
