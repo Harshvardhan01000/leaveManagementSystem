@@ -11,6 +11,7 @@ use App\Models\Salary;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LeaveApprovalController extends Controller
 {
@@ -22,7 +23,7 @@ class LeaveApprovalController extends Controller
 
 
 
-        $leaveList = Leave::where('start_date', '>', Carbon::now())->with('getLeaveType', 'getEmployee.userDetails', 'getEmployee.departmentDetails');
+        $leaveList = Leave::with('getLeaveType', 'getEmployee.userDetails', 'getEmployee.departmentDetails')->where('leave_status','pending');
         
         if ($search) {
             switch ($filter) {
@@ -59,6 +60,7 @@ class LeaveApprovalController extends Controller
     public function leaveStatusUpdate($id, Request $request)
     {
         $leave = Leave::find($id);
+        Log::info($leave);
         $employeeId = $leave->employee_id;
         $employee = Employee::find($employeeId);
         $user_id = $employee->user_id;
@@ -69,8 +71,8 @@ class LeaveApprovalController extends Controller
 
         if ($request->query('status') == 'approve') {
             $leave->update(['leave_status' => 'approved']);
-            AddAttendanceForLeave::dispatch($leave->id); // job for make attendance of leave days absent
-            UpdateDeductionOnLeave::dispatch($employeeId,$user_id,$salary);
+            AddAttendanceForLeave::dispatch($leave->id,$user_id); // job for make attendance of leave days absent
+            UpdateDeductionOnLeave::dispatch($employeeId,$user_id,$salary,$leave);
         } elseif ($request->query('status') == 'reject') {
             $leave->update(['leave_status' => 'rejected']);
         } else {
@@ -143,15 +145,9 @@ class LeaveApprovalController extends Controller
             return response()->json(['error' => 'Employee not found'], 404);
         }
 
-        // Get the current month and year
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-
         // Load the 'leave' relationship and filter by the current month and year
         $leaves = $Employee->leave()
-            ->whereMonth('start_date', $currentMonth)
-            ->whereYear('start_date', $currentYear)
-            ->with('getLeaveType')->get();
+            ->with('getLeaveType')->orderBy('start_date','desc')->get();
 
         // Return the leave data as JSON response
         return response()->json($leaves);

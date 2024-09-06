@@ -56,8 +56,11 @@ $(document).ready(function(){
                               width: 2
                           },
                           xaxis: {
-                              categories: data.payment_date.map(date => new Date(date).toLocaleString('default', { month: 'short' })),
-                          },
+                            categories: data.payment_date.map(date => {
+                                const dateObj = new Date(date);
+                                return dateObj.toLocaleString('default', { month: 'short', year: 'numeric' });
+                            }),
+                        },
                           tooltip: {
                               x: {
                                   format: 'dd/MM/yy'

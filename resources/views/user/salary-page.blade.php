@@ -101,7 +101,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                Taken : {{$leaveCount}}
+                                                Taken : {{$leaveCount ?? 0}}
                                             </h4>
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                $ {{$salary->deductions}}
+                                                $ {{$salary->deductions ?? 0}}
                                             </h4>
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="registration-content mr-xl-2">
                                             <h4 class="mb-0">
-                                                $ {{$salary->allowances}}
+                                                $ {{$salary->allowances ?? 0}}
                                             </h4>
                                         </div>
                                     </div>

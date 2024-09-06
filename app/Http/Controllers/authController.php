@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\PasswordResetmail;
+use App\Jobs\ResetMailJob;
+use App\Mail\PasswordResetMail;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\User;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str; 
+use Illuminate\Support\Str;
 
 class authController extends Controller
 {
@@ -94,7 +95,8 @@ class authController extends Controller
         return redirect('/');
     }
 
-    public function resetPassword(){
+    public function resetPassword()
+    {
         return view('reset-password');
     }
 
@@ -120,12 +122,43 @@ class authController extends Controller
             $user->password = Hash::make($newPassword);
             $user->save();
 
-            // Send an email with the new password
-            Mail::to($user->email)->send(new PasswordResetmail($user->first_name,$newPassword));
+            // Send an email with the new password using job
+            ResetMailJob::dispatch($user, $newPassword);
+            // Mail::to($user->email)->send(new PasswordResetMail($user->first_name, $newPassword));
 
-            return redirect()->back()->with('status', 'A new password has been sent to your email.');
+            return redirect()->route('login')->with('email',$user->email);
         } else {
             return redirect()->back()->withErrors(['email' => 'The provided email address does not exist.']);
         }
     }
+
+    public function uploadProfileImage(Request $request)
+    {
+        $user = Auth::user();
+    
+        // Check if the file was uploaded
+        if ($request->hasFile('croppedImage')) {
+            // Get the old image name
+            $oldImageName = $user->image;
+    
+            // If the old image isn't the default, delete it
+            if ($oldImageName != 'userlogo.png' && file_exists(public_path("userImages/$oldImageName"))) {
+                unlink(public_path("userImages/$oldImageName"));
+            }
+    
+            // Handle the new image upload
+            $file = $request->file('croppedImage');
+            $extension = $file->getClientOriginalExtension();
+            $user_logo_name = time() . "." . $extension;
+            $file->move(public_path('UserProfile/'), $user_logo_name);
+    
+            $user->image = $user_logo_name;
+            $user->save();
+    
+            return response()->json(['success' => 'Profile image updated successfully.']);
+        }
+    
+        return response()->json(['error' => 'Image upload failed.'], 500);
+    }
+    
 }

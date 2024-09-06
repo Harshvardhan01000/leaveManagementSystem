@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class employeeController extends Controller
 {
@@ -118,40 +119,80 @@ class employeeController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $Employee = Employee::find($id);
-        $user = User::find($Employee->user_id);
-        if ($request->has('image')) {
-            $name = $user->image;
-            if ($name != 'userlogo.png') {
-                unlink("userImages/$name");
-            }
+{
+    // Validate the request
+    $validator = Validator::make($request->all(), [
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'email' => 'required|email|exists:users,email',
+        'phone_number' => 'required|numeric',
+        'department' => 'required|exists:departments,id',
+        'designation' => 'required|string|max:255',
+        'joining_date' => 'required|date',
+        'current_salary' => 'required|numeric',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB Max
+    ]);
 
-            $file = $request->file('image');
-            $extention = $file->getClientOriginalExtension();
-            $user_logo_name = time() . "." . $extention;
-            $file->move('userImages/', $user_logo_name);
-            $user->image = $user_logo_name;
-            $user->save();
+    if ($validator->fails()) {
+        return response()->json([
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    // Find the employee record
+    $employee = Employee::find($id);
+    if (!$employee) {
+        return response()->json([
+            'error' => 'Employee not found'
+        ], 404);
+    }
+
+    // Find the associated user record
+    $user = User::find($employee->user_id);
+    if (!$user) {
+        return response()->json([
+            'error' => 'User not found'
+        ], 404);
+    }
+
+    // Handle image upload
+    if ($request->hasFile('image')) {
+        $oldImage = $user->image;
+        if ($oldImage && $oldImage !== 'userlogo.png') {
+            $oldImagePath = public_path("userImages/$oldImage");
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
         }
 
-
-        $Employee->update([
-            'department_id' => $request->department,
-            'designation' => $request->designation,
-            'joining_date' => $request->joining_date,
-            'current_salary' => $request->current_salary,
-        ]);
-        $user->update([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
-        ]);
-        return response()->json([
-            'message' => 'successfully updated'
-        ]);
+        $file = $request->file('image');
+        $extension = $file->getClientOriginalExtension();
+        $newImageName = time() . "." . $extension;
+        $file->move(public_path('userImages'), $newImageName);
+        $user->image = $newImageName;
     }
+
+    // Update the employee record
+    $employee->update([
+        'department_id' => $request->department,
+        'designation' => $request->designation,
+        'joining_date' => $request->joining_date,
+        'current_salary' => $request->current_salary,
+    ]);
+
+    // Update the user record
+    $user->update([
+        'first_name' => $request->first_name,
+        'last_name' => $request->last_name,
+        'email' => $request->email,
+        'phone_number' => $request->phone_number,
+    ]);
+
+    return response()->json([
+        'message' => 'Successfully updated'
+    ]);
+}
+
 
     /**
      * Remove the specified resource from storage.

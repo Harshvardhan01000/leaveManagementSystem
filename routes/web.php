@@ -33,6 +33,8 @@ Route::get('reset-password',[authController::class,'resetPassword']);
 
 Route::post('reset-password',[authController::class,'setPassword']);
 
+Route::post('/upload-profile-image', [authController::class, 'uploadProfileImage']);
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard',[DashboardController::class,'showDashBoard'])->name('dashboard');
     Route::resource('/employee', employeeController::class); 

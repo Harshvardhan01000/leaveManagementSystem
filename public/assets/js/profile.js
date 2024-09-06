@@ -145,6 +145,68 @@ $(document).ready(function() {
             });
         }
     });
+    let $imageUpload = $('#imageUpload');
+    let $imagePreview = $('#imagePreview');
+    let cropper;
 
+    // Handle image upload
+    $imageUpload.on('change', function(e) {
+        let files = e.target.files;
+
+        if (files && files.length > 0) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let url = reader.result;
+                $imagePreview.attr('src', url).removeClass('d-none');
+
+                // Initialize or reinitialize Cropper.js
+                if (cropper) {
+                    cropper.destroy(); // Destroy the old cropper instance if it exists
+                }
+                cropper = new Cropper($imagePreview[0], {
+                    aspectRatio: 1, // Set aspect ratio for square crop
+                    viewMode: 1
+                });
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    });
+
+    // Save cropped image
+    $('#saveCroppedImage').on('click', function() {
+        if (cropper) {
+            let canvas = cropper.getCroppedCanvas({
+                width: 500,  // Increase the cropped image width (e.g., 300px)
+                height: 800  // Increase the cropped image height (e.g., 300px)
+            });
+
+            // Convert the canvas to a Blob
+            canvas.toBlob(function(blob) {
+                let formData = new FormData();
+                formData.append('croppedImage', blob);
+
+                // Add CSRF token to the form data
+                formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+                // Send the cropped image to the server via AJAX
+                $.ajax({
+                    url: '/upload-profile-image', // Your image upload endpoint
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Handle success (update profile image, etc.)
+                        console.log('Upload successful:', response);
+                        location.reload(); // Reload the page to reflect the new profile image
+                    },
+                    error: function(error) {
+                        // Handle error
+                        console.error('Upload failed:', error);
+                    }
+                });
+            });
+        }
+    });
     
 });

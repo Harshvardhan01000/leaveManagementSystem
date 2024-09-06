@@ -44,17 +44,19 @@ class Leave extends Model
 
         static::created(function ($model) {
             // Dispatch job to add attendance records for the new leave
-            
+
         });
     }
 
-    
-    public function getLeaveType(){
-        return $this->belongsTo(LeaveType::class,'leave_type_id','id');
+
+    public function getLeaveType()
+    {
+        return $this->belongsTo(LeaveType::class, 'leave_type_id', 'id');
     }
-   
-    public function getEmployee(){
-        return $this->belongsTo(Employee::class,'employee_id','id');
+
+    public function getEmployee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }
 
     public function updateLeaveDays()
@@ -62,10 +64,20 @@ class Leave extends Model
         if ($this->start_date && $this->end_date) {
             $startDate = Carbon::parse($this->start_date);
             $endDate = Carbon::parse($this->end_date);
-            
-            // Calculate the number of days between the start date and end date
-            $leaveDays = $endDate->diffInDays($startDate) + 1; // +1 to include both start and end dates
-            
+
+            // Initialize a counter for the leave days
+            $leaveDays = 0;
+
+            // Iterate through each day from start date to end date
+            while ($startDate <= $endDate) {
+                // Check if the current day is a weekday (Monday to Friday)
+                if ($startDate->isWeekday()) {
+                    $leaveDays++;
+                }
+                // Move to the next day
+                $startDate->addDay();
+            }
+
             // Update the leave_days field
             $this->leave_days = $leaveDays;
         }

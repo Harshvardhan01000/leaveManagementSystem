@@ -50,7 +50,7 @@
                                             <input
                                                 class="form-control form-control-lg @error('email') is-invalid @enderror"
                                                 type="email" name="email" placeholder="Enter your email"
-                                                value="{{ old('email') }}">
+                                                value="{{ old('email', session('email')) }}">
                                             @error('email')
                                                 <div class="invalid-feedback animate__animated animate__shakeX">
                                                     {{ $message }}
