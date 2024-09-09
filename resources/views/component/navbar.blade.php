@@ -13,7 +13,7 @@
 
                 <!-- Large Screen Dropdown Toggle -->
                 <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                    <img src="{{ asset('UserProfile/' . (Auth::user()->image ?? 'userLogo.png')) }}" class="avatar img-fluid rounded me-1" alt="John Snow" />
+                    <img src="{{ asset('UserProfile/' . (Auth::user()->image ?? 'userLogo.png')) ?? asset('UserProfile/userLogo.png')}}" class="avatar img-fluid rounded me-1" alt="John Snow" />
                     <span class="text-dark">{{Auth::user()->first_name ?? 'Jonh'}} {{Auth::user()->last_name ?? 'Snow'}}</span>
                 </a>
                 

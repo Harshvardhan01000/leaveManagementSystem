@@ -37,7 +37,7 @@ $(document).ready(function () {
             holidayDate: "Please select the holiday date.",
             holidayDescription: "Please provide a brief description."
         },
-        errorPlacement: function(error, element) {
+        errorPlacement: function (error, element) {
             error.insertAfter(element);  // Place error after the input field
         }
     });
@@ -90,13 +90,11 @@ $(document).ready(function () {
         }
     });
 
-    // Convert holiday dates to Date objects
     const holidayDates = holidays.map(date => new Date(date));
 
-    // Function to generate weekends for a given year
     function getWeekends(year) {
         const weekends = [];
-        let date = new Date(year, 0, 1); // Start of the year
+        let date = new Date(year, 0, 1); 
 
         while (date.getFullYear() === year) {
             if (date.getDay() === 0 || date.getDay() === 6) { // Sunday or Saturday
@@ -107,24 +105,27 @@ $(document).ready(function () {
 
         return weekends;
     }
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
-    // Get weekends for the current year (or specify another year)
     const currentYear = new Date().getFullYear();
     const weekendDates = getWeekends(currentYear);
 
-    // Initialize Flatpickr with custom onDayCreate callback
     const fp = document.getElementById("datetimepicker-dashboard").flatpickr({
         inline: true,
         prevArrow: "<span title=\"Previous month\">&laquo;</span>",
         nextArrow: "<span title=\"Next month\">&raquo;</span>",
-        defaultDate: new Date(), // Set default date to today
+        defaultDate: new Date(),
         onDayCreate: function (dObj, dStr, fp, dayElem) {
-            // Convert flatpickr day element's date to a string
-            const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+            const dateStr = formatDate(dayElem.dateObj);
 
             // Check if the day is a holiday or a weekend
-            const isHoliday = holidayDates.some(holiday => holiday.toISOString().split('T')[0] === dateStr);
-            const isWeekend = weekendDates.some(weekend => weekend.toISOString().split('T')[0] === dateStr);
+            const isHoliday = holidayDates.some(holiday => formatDate(holiday) === dateStr);
+            const isWeekend = weekendDates.some(weekend => formatDate(weekend) === dateStr);
 
             // Apply custom styling for holidays or weekends
             if (isHoliday || isWeekend) {
@@ -133,45 +134,41 @@ $(document).ready(function () {
         }
     });
 
-    // Mark today's date when the calendar is loaded
     const today = new Date();
-    fp.setDate(today, true); // Set the current date and open the calendar
+    fp.setDate(today, true);
 
-    $('#holidayForm').on('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission
 
-        // Create a FormData object from the form
+    $('#holidayForm').on('submit', function (e) {
+        e.preventDefault();
+
         var formData = new FormData(this);
 
         $.ajax({
-            url: '/create-holiday', // Your endpoint for creating a holiday
-            type: 'POST',
+            url: '/create-holiday',
             data: formData,
-            processData: false, // Prevent jQuery from processing the data
-            contentType: false, // Prevent jQuery from setting the content type
-            success: function(data) {
-                // Show a success message using SweetAlert2
+            processData: false, 
+            contentType: false,
+            success: function (data) {
+              
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: data.message, // Display the success message
+                    text: data.message,
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Optionally, clear the form
+                        
                         $('#holidayForm')[0].reset();
 
-                        // Refresh the page
                         window.location.reload();
                     }
                 });
             },
-            error: function(xhr) {
-                // Show an error message using SweetAlert2
+            error: function (xhr) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'An error occurred: ' + xhr.responseText, // Display the error message
+                    text: 'An error occurred: ' + xhr.responseText, 
                     confirmButtonText: 'OK'
                 });
             }
@@ -179,7 +176,7 @@ $(document).ready(function () {
     });
     let date = new Date();
     let day = String(date.getDate()).padStart(2, '0');
-    let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    let month = String(date.getMonth() + 1).padStart(2, '0'); 
     let year = date.getFullYear();
     let minDate = year + '-' + month + '-' + day;
     $('#holidayDate').attr('min', minDate);

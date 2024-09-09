@@ -124,13 +124,13 @@ class employeeController extends Controller
     $validator = Validator::make($request->all(), [
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
-        'email' => 'required|email|exists:users,email',
+        // 'email' => 'required|email|exists:users,email',
         'phone_number' => 'required|numeric',
         'department' => 'required|exists:departments,id',
         'designation' => 'required|string|max:255',
         'joining_date' => 'required|date',
         'current_salary' => 'required|numeric',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB Max
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
     if ($validator->fails()) {

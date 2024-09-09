@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="card-body text-center position-relative">
                                     <div class="position-relative d-inline-block">
-                                        <img src="{{ asset('UserProfile/' . Auth::user()->image) }}" alt="Profile Image"
+                                        <img src="{{ asset('UserProfile/' . Auth::user()->image) ?? asset('UserProfile/userLogo.png')}}" alt="Profile Image"
                                             class="img-fluid rounded-circle mb-2" width="128" height="128" />
                                         <!-- Edit icon in the bottom-right corner -->
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#editImageModal"

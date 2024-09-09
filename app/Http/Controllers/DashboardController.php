@@ -45,7 +45,6 @@ class DashboardController extends Controller
                 ->whereYear('holiday_date', Carbon::now()->year)
                 ->first();
             $holydayDate = Holiday::pluck('holiday_date');
-
             $holidayTable = Holiday::whereDate('holiday_date', '>=', $today) // Use whereDate to ignore time
                 ->orderBy('holiday_date') // Order by date to get the closest holidays first
                 ->limit(5) // Limit to the next 5 holidays

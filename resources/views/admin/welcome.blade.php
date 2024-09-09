@@ -320,6 +320,8 @@
         let absentCount = @json($EmployeeCount-$todayPresentCount);
         let salaryCount = @json($salaryCount);
         let holidays = @json($holydayDate);
+        
+        
     </script>
     <script src="assets/js/app.js"></script>
     <script src="{{asset('assets/js/dashboard.js')}}"></script>

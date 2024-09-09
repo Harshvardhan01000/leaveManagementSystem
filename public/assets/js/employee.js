@@ -32,7 +32,6 @@ $(document).ready(function() {
         }
     });
 
-    // Initialize validation
     $('#editEmployeeForm').validate({
         rules: {
             first_name: {
@@ -88,11 +87,10 @@ $(document).ready(function() {
             }
         },
         errorPlacement: function(error, element) {
-            error.insertAfter(element);  // Place error after the input field
+            error.insertAfter(element); 
         }
     });
 
-    // Reset validation and form data on modal hide
     $('#editEmployeeModal').on('hidden.bs.modal', function () {
         let form = $('#editEmployeeForm');
         form.validate().resetForm(); // Reset validation messages
@@ -101,7 +99,6 @@ $(document).ready(function() {
         $("input,select").removeClass('error');// Remove validation classes
     });
 
-    // Event listener to setup the modal when it's shown
     $('#editEmployeeModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var mode = button.data('mode'); // Extract info from data-* attributes
