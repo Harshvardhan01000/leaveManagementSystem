@@ -159,7 +159,7 @@ class employeeController extends Controller
     if ($request->hasFile('image')) {
         $oldImage = $user->image;
         if ($oldImage && $oldImage !== 'userlogo.png') {
-            $oldImagePath = public_path("userImages/$oldImage");
+            $oldImagePath = public_path("UserProfile/$oldImage");
             if (file_exists($oldImagePath)) {
                 unlink($oldImagePath);
             }
@@ -168,7 +168,7 @@ class employeeController extends Controller
         $file = $request->file('image');
         $extension = $file->getClientOriginalExtension();
         $newImageName = time() . "." . $extension;
-        $file->move(public_path('userImages'), $newImageName);
+        $file->move(public_path('UserProfile'), $newImageName);
         $user->image = $newImageName;
     }
 
