@@ -11,7 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class DashboardController extends Controller
+class 
+DashboardController extends Controller
 {
     public function showDashBoard(Request $request)
     {
